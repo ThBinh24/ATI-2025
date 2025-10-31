@@ -1,0 +1,75 @@
+{
+  "Software Engineer": [
+    "Python",
+    "Java",
+    "C++",
+    "Git",
+    "Docker",
+    "Kubernetes",
+    "REST APIs",
+    "SQL"
+  ],
+  "Data Scientist": [
+    "Python",
+    "Pandas",
+    "NumPy",
+    "Scikit-learn",
+    "Machine Learning",
+    "Statistics",
+    "SQL",
+    "Data Visualization"
+  ],
+  "DevOps Engineer": [
+    "Linux",
+    "Docker",
+    "Kubernetes",
+    "CI/CD",
+    "Terraform",
+    "AWS",
+    "Monitoring"
+  ],
+  "Frontend Engineer": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "HTML",
+    "CSS",
+    "Webpack",
+    "CSS"
+  ],
+  "Backend Engineer": [
+    "Python",
+    "Django",
+    "Flask",
+    "REST APIs",
+    "PostgreSQL",
+    "SQL",
+    "Redis"
+  ],
+  "Machine Learning Engineer": [
+    "Python",
+    "TensorFlow",
+    "PyTorch",
+    "Machine Learning",
+    "Model Deployment",
+    "Docker",
+    "Feature Engineering"
+  ],
+  "Data Engineer": [
+    "Python",
+    "SQL",
+    "ETL",
+    "Airflow",
+    "Spark",
+    "Data Modeling",
+    "AWS"
+  ],
+  "QA Engineer": [
+    "Testing",
+    "Selenium",
+    "Unit Testing",
+    "Integration Testing",
+    "Automation",
+    "CI/CD"
+  ]
+}

@@ -1,0 +1,37 @@
+# Project ignore rules
+
+# Python / FastAPI backend
+backend/.venv/
+backend/.env
+backend/jobs.db
+backend/uploads/
+backend/uploads/**/*
+backend/*.db
+backend/*.db-journal
+backend/app/**/__pycache__/
+backend/app/**/.pytest_cache/
+
+# Frontend (React + Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/pnpm-debug.log*
+
+# Generic / OS
+**/__pycache__/
+.DS_Store
+Thumbs.db
+*.log
+*.pyc
+*.pyo
+.idea/
+.vscode/
+*.code-workspace
+
+# Build artifacts / archives
+*.zip
+*.tar
+*.tar.gz
+

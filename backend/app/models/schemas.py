@@ -1,0 +1,89 @@
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+
+
+class UserOut(BaseModel):
+    id: int
+    name: str
+    email: EmailStr
+    role: str
+    created_at: Optional[str] = None
+    is_banned: Optional[bool] = None
+    banned_reason: Optional[str] = None
+    banned_at: Optional[str] = None
+
+
+class RegisterRequest(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+    role: str = "student"
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserOut
+
+
+class BanUserRequest(BaseModel):
+    reason: str
+
+class JobCreate(BaseModel):
+    title: str
+    company_name: str = ""
+    jd_text: Optional[str] = ""
+    hr_email: str = ""
+    coverage_threshold: float = 0.6
+
+class JobUpdateStatus(BaseModel):
+    status: str
+    rejection_reason: Optional[str] = None
+
+class Job(BaseModel):
+    id: int
+    title: str
+    company_name: str = ""
+    jd_text: str = ""
+    hr_email: str = ""
+    created_at: str = ""
+    status: str = "pending"
+    published: int = 0
+    coverage_threshold: float = 0.6
+    employer_id: Optional[int] = None
+    rejection_reason: Optional[str] = None
+    has_attachment: bool = False
+    attachment_name: Optional[str] = None
+    attachment_path: Optional[str] = None
+
+class CVProcessRequest(BaseModel):
+    cv_text: Optional[str] = None
+    job_id: Optional[int] = None
+
+class CVWarning(BaseModel):
+    issue: str
+    severity: str
+    recommendation: Optional[str] = None
+
+class CourseSuggestion(BaseModel):
+    skill: str
+    title: str
+    provider: Optional[str] = None
+    url: Optional[str] = None
+
+class CVProcessResult(BaseModel):
+    cv_skills: List[str]
+    jd_skills: List[str]
+    matched: List[str]
+    missing: List[str]
+    coverage: float
+    similarity: float
+    passed: bool
+    predicted_role: str
+    quality_warnings: List[CVWarning]
+    course_suggestions: List[CourseSuggestion]

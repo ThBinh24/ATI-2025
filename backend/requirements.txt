@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+google-generativeai
+yagmail
+pdfplumber
+python-docx
+pandas
+numpy
+scikit-learn
+sentence-transformers
+torch
+rapidfuzz
+email-validator
+passlib
+python-jose[cryptography]

@@ -43,6 +43,12 @@ def authenticate_user(email: str, password: str) -> Optional[Dict]:
         return None
     if not verify_password(password, user.get("password_hash", "")):
         return None
+    if user.get("is_banned"):
+        reason = user.get("banned_reason") or "Account has been banned."
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=reason,
+        )
     return _sanitize_user(user)
 
 
@@ -70,3 +76,15 @@ def ban_user(user_id: int, reason: str) -> Dict:
 
 def get_banned_users() -> list[Dict]:
     return [_sanitize_user(user) for user in users_dao.list_banned_users()]
+
+
+def unban_user(user_id: int) -> Dict:
+    user = users_dao.get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found.")
+    if not user.get("is_banned"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User is not currently banned.")
+    updated = users_dao.unban_user(user_id)
+    if not updated:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to unban user.")
+    return _sanitize_user(users_dao.get_user_by_id(user_id))

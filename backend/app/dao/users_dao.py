@@ -76,6 +76,23 @@ def ban_user(user_id: int, reason: str) -> bool:
     return cur.rowcount > 0
 
 
+def unban_user(user_id: int) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        UPDATE users
+        SET is_banned = 0,
+            banned_reason = '',
+            banned_at = NULL
+        WHERE id = ?
+        """,
+        (int(user_id),),
+    )
+    conn.commit()
+    return cur.rowcount > 0
+
+
 def list_banned_users() -> List[Dict[str, Any]]:
     conn = get_connection()
     cur = conn.cursor()

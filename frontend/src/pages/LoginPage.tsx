@@ -22,7 +22,13 @@ const LoginPage: React.FC = () => {
       await login(email, password);
       navigate("/");
     } catch (err: any) {
-      const message = err?.response?.data?.detail || "Login failed.";
+      const detail = err?.response?.data?.detail;
+      const message =
+        typeof detail === "string"
+          ? detail.includes("banned")
+            ? `You have been banned! Reason: ${detail}`
+            : detail
+          : "Login failed.";
       setError(message);
     } finally {
       setSubmitting(false);
@@ -43,7 +49,7 @@ const LoginPage: React.FC = () => {
         )}
         {error && (
           <div className="px-4 py-2 mt-4 text-sm border rounded border-rose-200 bg-rose-50 text-rose-700">
-            {error}
+            You have been banned! Reason: {error}
           </div>
         )}
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>

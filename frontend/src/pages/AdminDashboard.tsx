@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../lib/time";
 import {
   banUser,
+  unbanUser,
   listBannedUsers,
   listJobHistory,
   listPendingJobs,
@@ -96,6 +97,7 @@ const AdminDashboard: React.FC = () => {
   const [banTarget, setBanTarget] = useState<AdminUser | null>(null);
   const [banReason, setBanReason] = useState("");
   const [banModalError, setBanModalError] = useState<string | null>(null);
+  const [unbanBusy, setUnbanBusy] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -231,6 +233,20 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleUnbanUser = async (target: AdminUser) => {
+    setUnbanBusy(target.id);
+    setErrorUsers(null);
+    try {
+      await unbanUser(target.id);
+      await fetchUsers();
+      await fetchHistory();
+    } catch (err: any) {
+      setErrorUsers(extractErrorMessage(err, "Failed to unban user."));
+    } finally {
+      setUnbanBusy(null);
+    }
+  };
+
   const userRows = useMemo(
     () =>
       users.map((u, idx) => ({
@@ -321,14 +337,24 @@ const AdminDashboard: React.FC = () => {
                         {formatDate(row.created_at)}
                       </td>
                       <td className="px-4 py-3">
-                        <button
-                          type="button"
-                          disabled={!!row.is_banned}
-                          className="px-3 py-1 text-xs font-medium transition border rounded-lg border-slate-300 text-slate-600 hover:border-rose-400 hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-60"
-                          onClick={() => openBanModal(row)}
-                        >
-                          {row.is_banned ? "Already banned" : "Ban user"}
-                        </button>
+                        {row.is_banned ? (
+                          <button
+                            type="button"
+                            className="px-3 py-1 text-xs font-medium transition border rounded-lg border-emerald-300 text-emerald-600 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60"
+                            onClick={() => handleUnbanUser(row)}
+                            disabled={unbanBusy === row.id}
+                          >
+                            {unbanBusy === row.id ? "Unbanning..." : "Unban user"}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="px-3 py-1 text-xs font-medium transition border rounded-lg border-slate-300 text-slate-600 hover:border-rose-400 hover:text-rose-500 disabled:cursor-not-allowed disabled:opacity-60"
+                            onClick={() => openBanModal(row)}
+                          >
+                            Ban user
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -504,6 +530,7 @@ const AdminDashboard: React.FC = () => {
                       <th className="px-4 py-3">Role</th>
                       <th className="px-4 py-3">Reason</th>
                       <th className="px-4 py-3">Banned at</th>
+                      <th className="px-4 py-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -514,17 +541,27 @@ const AdminDashboard: React.FC = () => {
                           {entry.email}
                         </td>
                         <td className="px-4 py-3 capitalize">{entry.role}</td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {entry.banned_reason || "(not provided)"}
-                        </td>
-                        <td className="px-4 py-3 text-slate-500">
-                          {formatDate(entry.banned_at)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                      <td className="px-4 py-3 text-slate-600">
+                        {entry.banned_reason || "(not provided)"}
+                      </td>
+                      <td className="px-4 py-3 text-slate-500">
+                        {formatDate(entry.banned_at)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          type="button"
+                          className="px-3 py-1 text-xs font-medium transition border rounded-lg border-emerald-300 text-emerald-600 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60"
+                          onClick={() => handleUnbanUser(entry)}
+                          disabled={unbanBusy === entry.id}
+                        >
+                          {unbanBusy === entry.id ? "Unbanning..." : "Unban"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             )}
           </div>
 

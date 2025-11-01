@@ -44,6 +44,11 @@ def ban_user(user_id: int, payload: BanUserRequest, _: dict = Depends(require_ro
     return auth_service.ban_user(user_id, payload.reason)
 
 
+@router.post("/users/{user_id}/unban", response_model=UserOut)
+def unban_user(user_id: int, _: dict = Depends(require_roles("admin"))):
+    return auth_service.unban_user(user_id)
+
+
 @router.get("/users/banned", response_model=list[UserOut])
 def banned_users(_: dict = Depends(require_roles("admin"))):
     return auth_service.get_banned_users()

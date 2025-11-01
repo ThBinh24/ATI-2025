@@ -161,6 +161,8 @@ export const sendEmail = (payload: {
 export const listUsers = () => api.get("/auth/users");
 export const banUser = (userId: number, reason: string) =>
   api.post(`/auth/users/${userId}/ban`, { reason });
+export const unbanUser = (userId: number) =>
+  api.post(`/auth/users/${userId}/unban`);
 export const listBannedUsers = () => api.get("/auth/users/banned");
 export const downloadJobAttachment = (jobId: number) =>
   api.get(`/jobs/${jobId}/attachment`, { responseType: "blob" });

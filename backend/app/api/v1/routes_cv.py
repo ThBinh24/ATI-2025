@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
-from app.models.schemas import CVProcessRequest, CVProcessResult
+from app.schemas.schemas import CVProcessRequest, CVProcessResult
 from app.dao.jobs_dao import get_job_by_id
 from app.services.skills_service import extract_skills
 from app.services.embedding_service import coverage_score, semantic_similarity

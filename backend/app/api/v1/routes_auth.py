@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.deps import get_current_user, require_roles
 from app.core.security import create_access_token
-from app.models.schemas import AuthResponse, BanUserRequest, LoginRequest, RegisterRequest, UserOut
+from app.schemas.schemas import AuthResponse, BanUserRequest, LoginRequest, RegisterRequest, UserOut
 from app.services import auth_service
 
 router = APIRouter(prefix="/auth", tags=["auth"])

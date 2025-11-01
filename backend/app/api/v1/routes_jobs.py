@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse
 
 from app.core import config
 from app.core.deps import get_current_user, require_roles
-from app.models.schemas import JobUpdateStatus
+from app.schemas.schemas import JobUpdateStatus
 from app.dao.jobs_dao import (
     create_job,
     get_job_by_id,

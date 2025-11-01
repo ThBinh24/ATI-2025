@@ -2,8 +2,6 @@
 
 # Python / FastAPI backend
 backend/.venv/
-backend/.env
-backend/jobs.db
 backend/uploads/
 backend/uploads/**/*
 backend/*.db

@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import InterviewPracticePage from "./pages/InterviewPracticePage";
+import JobDescriptionGeneratorPage from "./pages/JobDescriptionGeneratorPage";
 import InterviewQuestionsPage from "./pages/InterviewQuestionsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
@@ -55,6 +56,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute roles={["admin", "employer"]}>
         <EditJobPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/jobs/generator",
+    element: (
+      <ProtectedRoute roles={["employer", "admin"]}>
+        <JobDescriptionGeneratorPage />
       </ProtectedRoute>
     ),
   },

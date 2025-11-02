@@ -87,3 +87,18 @@ class CVProcessResult(BaseModel):
     predicted_role: str
     quality_warnings: List[CVWarning]
     course_suggestions: List[CourseSuggestion]
+
+
+class JobDescriptionRequest(BaseModel):
+    title: str
+    experience_level: Optional[str] = None
+    core_skills: Optional[List[str]] = None
+    responsibilities: Optional[str] = None
+    benefits: Optional[str] = None
+    company_name: Optional[str] = None
+    tone: Optional[str] = None
+
+
+class JobDescriptionResponse(BaseModel):
+    jd_text: str
+    source: str = "gemini"

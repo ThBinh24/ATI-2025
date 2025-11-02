@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CreateJobPayload, createJob } from "../services/backend";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ACCEPTED_FILE_TYPES = [".pdf", ".doc", ".docx", ".zip"];
@@ -8,6 +8,7 @@ const ACCEPTED_FILE_TYPES = [".pdf", ".doc", ".docx", ".zip"];
 export default function CreateJobPage() {
   const nav = useNavigate();
   const { user } = useAuth();
+  const location = useLocation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [form, setForm] = useState<CreateJobPayload>({
     title: "",
@@ -29,6 +30,22 @@ export default function CreateJobPage() {
       }));
     }
   }, [user]);
+  useEffect(() => {
+    const state = location.state as
+      | { generatedJd?: string; companyName?: string }
+      | null;
+    if (state?.generatedJd) {
+      setForm((prev) => ({
+        ...prev,
+        jd_text: state.generatedJd ?? prev.jd_text,
+        company_name: state.companyName ?? prev.company_name,
+      }));
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      nav(".", { replace: true, state: null });
+    }
+  }, [location.state, nav]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;

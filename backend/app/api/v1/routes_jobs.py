@@ -4,12 +4,25 @@ import shutil
 from pathlib import Path
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status, Response
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    UploadFile,
+    status,
+    Response,
+)
 from fastapi.responses import FileResponse
 
 from app.core import config
 from app.core.deps import get_current_user, require_roles
-from app.schemas.schemas import JobUpdateStatus
+from app.schemas.schemas import (
+    JobDescriptionRequest,
+    JobDescriptionResponse,
+    JobUpdateStatus,
+)
 from app.dao.jobs_dao import (
     create_job,
     get_job_by_id,
@@ -22,6 +35,7 @@ from app.dao.jobs_dao import (
 )
 from app.services.cv_service import extract_text_generic_from_bytes
 from app.services.gemini_service import (
+    generate_job_description_with_gemini,
     gemini_available,
     generate_interview_questions_from_gemini,
     summarize_jd_for_prompt,
@@ -65,6 +79,79 @@ def save_attachment(upload: UploadFile | None) -> tuple[str | None, str | None]:
     upload.file.close()
     original_name = Path(upload.filename).name
     return str(destination.resolve()), original_name
+
+
+def _build_jd_prompt(payload: JobDescriptionRequest) -> str:
+    title = payload.title.strip()
+    experience = (payload.experience_level or "mid-level").strip()
+    tone = (payload.tone or "professional and inclusive").strip()
+    company = (payload.company_name or "the company").strip()
+    skills = ", ".join(payload.core_skills or []) or "the most relevant skills for this position"
+    responsibilities_hint = (payload.responsibilities or "").strip()
+    benefits_hint = (payload.benefits or "").strip()
+
+    responsibilities_line = (
+        f"Focus on these responsibilities: {responsibilities_hint}"
+        if responsibilities_hint
+        else "Highlight 5 responsibilities that show impact and collaboration."
+    )
+    benefits_line = (
+        f"Mention these benefits: {benefits_hint}"
+        if benefits_hint
+        else "Include 3-4 concrete benefits (e.g., salary, growth, culture)."
+    )
+
+    return f"""
+Act as an HR specialist. Draft a clear, plain-text job description for a "{title}" role at {company}.
+- Target experience level: {experience}
+- Core skills emphasis: {skills}
+- Tone: {tone}
+- Include sections with uppercase headings in this exact order: OVERVIEW, RESPONSIBILITIES, REQUIREMENTS, NICE TO HAVE, BENEFITS.
+- Under each heading, provide concise sentences or bullet-style lines that begin with "- ", without using HTML or Markdown syntax.
+- Keep the entire response under 350 words.
+- {responsibilities_line}
+- {benefits_line}
+- Reply with plain text only (no HTML tags, no Markdown).
+""".strip()
+
+
+def _fallback_jd(payload: JobDescriptionRequest) -> str:
+    company = payload.company_name or "our company"
+    experience = payload.experience_level or "mid-level"
+    skills = ", ".join(payload.core_skills or ["relevant skills"])
+    title = payload.title
+    overview_line = (
+        f"{company} is hiring a {experience} {title} to drive measurable impact and support cross-functional initiatives."
+    )
+    return "\n".join([
+        f"JOB TITLE: {title}",
+        f"COMPANY: {company}",
+        f"LEVEL: {experience}",
+        "",
+        "OVERVIEW:",
+        f"- {overview_line}",
+        "",
+        "RESPONSIBILITIES:",
+        "- Own day-to-day delivery for core initiatives.",
+        "- Collaborate with stakeholders to refine requirements and unblock execution.",
+        "- Track metrics to ensure goals are met and report progress frequently.",
+        "- Proactively surface risks and propose solutions.",
+        "",
+        "REQUIREMENTS:",
+        f"- Proven experience in {title} or a related role.",
+        f"- Strong proficiency with {skills}.",
+        "- Excellent communication, problem-solving, and teamwork abilities.",
+        "- Comfort operating in a fast-paced environment.",
+        "",
+        "NICE TO HAVE:",
+        "- Experience mentoring teammates or leading small projects.",
+        "- Familiarity with modern tooling and agile ways of working.",
+        "",
+        "BENEFITS:",
+        "- Competitive compensation and bonus structure.",
+        "- Flexible working environment and professional development budget.",
+        "- Comprehensive health coverage and generous paid time off.",
+    ])
 
 
 @router.get("")
@@ -239,6 +326,28 @@ def patch_job_status(
     return {"status": new_status}
 
 
+
+@router.post("/generate-jd", response_model=JobDescriptionResponse)
+def generate_job_description(
+    payload: JobDescriptionRequest,
+    current_user: dict = Depends(require_roles("admin", "employer")),
+):
+    prompt = _build_jd_prompt(payload)
+    jd_text = None
+    source = "fallback"
+    if gemini_available():
+        try:
+            jd_text = generate_job_description_with_gemini(prompt)
+            if jd_text:
+                source = "gemini"
+        except Exception:
+            jd_text = None
+    if not jd_text:
+        jd_text = _fallback_jd(payload)
+        source = "fallback"
+    return JobDescriptionResponse(jd_text=jd_text, source=source)
+
+
 def _fallback_questions(jd_text: str, domain: str) -> list[str]:
     jd_text = (jd_text or "").strip()
     skills = extract_skills(jd_text, top_n=6)
@@ -279,7 +388,7 @@ async def generate_job_interview_questions(
     if domain not in {"behavioral", "technical"}:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Domain must be 'behavioral' hoặc 'technical'.",
+            detail="Domain must be 'behavioral' or 'technical'.",
         )
     job = get_job_by_id(job_id)
     if not job:
@@ -311,7 +420,7 @@ async def generate_job_interview_questions(
     if not combined_text.strip():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Chưa có mô tả JD nào để tạo câu hỏi. Vui lòng nhập nội dung hoặc upload file.",
+            detail="No job description provided. Please enter content or upload a file.",
         )
 
     questions: list[str] | None = None
@@ -361,3 +470,9 @@ def delete_job(
         except OSError:
             pass
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+

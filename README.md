@@ -12,6 +12,7 @@ CV Matcher is an AI-assisted recruitment platform that streamlines hiring for ad
 ### Employer
 - Create, edit, and delete job listings with optional JD attachments and coverage thresholds.
 - View applicants, download submitted CVs, and send interview invites via Gmail.
+- Generate plain-text job descriptions via Gemini 2.5 Flash (with deterministic fallback) and push them directly into the Create Job flow.
 - Generate five tailored interview questions (behavioural or technical) with Gemini 2.5 Flash.
 
 ### Student
@@ -29,12 +30,11 @@ ATI-main/
    +-- assets/              # skills.csv, job_titles.json used for extraction
    +-- uploads/             # Stored JD and CV files
    +-- requirements.txt
-   +-- seed_admin.py        # Optional script to create an admin user
-   +-- test_gemini.py       # Smoke test for Gemini connectivity
 +-- frontend/
    +-- src/                 # React SPA (Vite + Tailwind)
    +-- package.json
    +-- tailwind.config.js
++-- scripts/                # Utility scripts (seed_admin.py, test_gemini.py, etc.)
 +-- README.md
 ```
 
@@ -95,8 +95,8 @@ CV_UPLOAD_DIR=absolute_path_to_backend\uploads\cv
 GEMINI_MODEL_INTERVIEW=gemini-2.5-flash
 ```
 
-- `test_gemini.py` can verify connectivity: `python test_gemini.py`.
-- `seed_admin.py` inserts a sample admin user: `python seed_admin.py`.
+- `python scripts\test_gemini.py` verifies Gemini connectivity (plain-text JD generation, interview questions, feedback).
+- `python scripts\seed_admin.py` inserts a sample admin user.
 
 ## Using the Platform
 
@@ -104,7 +104,7 @@ GEMINI_MODEL_INTERVIEW=gemini-2.5-flash
 2. Register a user or run the seed script for the admin account.
 3. Log in:
    - Admin: visit `/admin` to moderate jobs and inspect users.
-   - Employer: create or edit jobs, view applicants, and open `/interview/questions` for AI-generated question sets.
+   - Employer: create or edit jobs, generate job descriptions at `/jobs/generator`, view applicants, and open `/interview/questions` for AI-generated question sets.
    - Student: explore jobs, run the AI check, apply for positions, and practise interviews at `/interview`.
 
 ## AI and ML Pipeline
@@ -112,6 +112,7 @@ GEMINI_MODEL_INTERVIEW=gemini-2.5-flash
 - Skill extraction uses regex heuristics and the curated list in `backend/app/assets/skills.csv`.
 - Coverage scoring relies on SentenceTransformer embeddings with caching; string overlap is used as a safety net.
 - Gemini 2.5 Flash provides:
+  - Plain-text job description generator for employers (fallback template prevents empty responses).
   - Interview question generation for employers.
   - Concise interview feedback for students.
   - Enhanced CV analysis (skills, gaps, quality warnings, course suggestions).

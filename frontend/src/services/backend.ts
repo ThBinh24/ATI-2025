@@ -105,6 +105,19 @@ export const sendApplicantInvite = (
   payload: { subject: string; body: string; attach_jd?: boolean },
 ) => api.post(`/applicants/${applicantId}/invite`, payload);
 
+export interface JobDescriptionPayload {
+  title: string;
+  experience_level?: string;
+  core_skills?: string[];
+  responsibilities?: string;
+  benefits?: string;
+  company_name?: string;
+  tone?: string;
+}
+
+export const generateJobDescription = (payload: JobDescriptionPayload) =>
+  api.post("/jobs/generate-jd", payload);
+
 export const generateJobInterviewQuestions = (
   jobId: number,
   payload: { domain: string; jd_text?: string; jd_file?: File | null },

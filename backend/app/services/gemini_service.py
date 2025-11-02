@@ -309,3 +309,14 @@ Known JD skills (for reference): {", ".join(fallback_jd_skills) or "None"}
         "quality_warnings": quality_warnings,
         "course_suggestions": course_suggestions,
     }
+
+
+def generate_job_description_with_gemini(prompt: str) -> Optional[str]:
+    if not gemini_available():
+        return None
+    try:
+        result = _MODEL.generate_content(prompt)  # type: ignore[attr-defined]
+    except Exception:
+        return None
+    return (getattr(result, "text", "") or "").strip()
+

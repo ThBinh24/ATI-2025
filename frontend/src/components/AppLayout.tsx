@@ -48,12 +48,20 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </Link>
             )}
             {user?.role === "employer" && (
-              <Link
-                to="/interview/questions"
-                className="px-3 py-2 transition rounded hover:bg-slate-100"
-              >
-                AI Interview Questions
-              </Link>
+              <>
+                <Link
+                  to="/jobs/generator"
+                  className="px-3 py-2 transition rounded hover:bg-slate-100"
+                >
+                  Job Description Generator
+                </Link>
+                <Link
+                  to="/interview/questions"
+                  className="px-3 py-2 transition rounded hover:bg-slate-100"
+                >
+                  AI Interview Questions
+                </Link>
+              </>
             )}
             
           </nav>

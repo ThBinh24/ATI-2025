@@ -112,7 +112,7 @@ const JobDescriptionGeneratorPage: React.FC = () => {
         onSubmit={handleSubmit}
         className="p-6 space-y-4 bg-white border shadow-sm rounded-2xl border-slate-200"
       >
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <label
               htmlFor="title"

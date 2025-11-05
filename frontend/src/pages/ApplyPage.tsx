@@ -200,7 +200,7 @@ export default function ApplyPage() {
               : job.status || "Pending"}
           </span>
         </div>
-        <div className="grid gap-3 md:grid-cols-3 text-sm text-slate-600">
+        <div className="grid gap-3 text-sm md:grid-cols-3 text-slate-600">
           <div>
             <div className="text-xs font-semibold uppercase text-slate-500">
               HR email
@@ -277,7 +277,7 @@ export default function ApplyPage() {
         </div>
         <div className="flex flex-wrap gap-3">
           <button
-            className="inline-flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold text-white transition rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
             onClick={runAnalysis}
             disabled={analyzing}
           >
@@ -285,14 +285,14 @@ export default function ApplyPage() {
           </button>
           <button
             type="button"
-            className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold transition bg-white border rounded-lg border-slate-200 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
             onClick={handleCancel}
             disabled={analyzing || applying}
           >
             Cancel
           </button>
           <button
-            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex items-center px-4 py-2 text-sm font-semibold text-white transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             onClick={applyForJob}
             disabled={applying || !result}
           >
@@ -380,7 +380,7 @@ export default function ApplyPage() {
                   (result.matched || []).map((skill: string, idx: number) => (
                     <span
                       key={`${skill}-${idx}`}
-                      className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700"
+                      className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700"
                     >
                       {skill}
                     </span>
@@ -399,7 +399,7 @@ export default function ApplyPage() {
                   (result.missing || []).map((skill: string, idx: number) => (
                     <span
                       key={`${skill}-${idx}`}
-                      className="inline-flex items-center rounded-full bg-rose-100 px-2 py-1 text-xs font-medium text-rose-700"
+                      className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-rose-100 text-rose-700"
                     >
                       {skill}
                     </span>
@@ -419,9 +419,9 @@ export default function ApplyPage() {
                   result.quality_warnings.map((warning: any, idx: number) => (
                     <div
                       key={`warning-${idx}`}
-                      className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2"
+                      className="px-3 py-2 border rounded-lg border-amber-200 bg-amber-50"
                     >
-                      <div className="text-xs uppercase font-semibold text-amber-600">
+                      <div className="text-xs font-semibold uppercase text-amber-600">
                         {warning.severity || "info"}
                       </div>
                       <div className="font-medium text-slate-900">
@@ -451,7 +451,7 @@ export default function ApplyPage() {
                   result.course_suggestions.map((course: any, idx: number) => (
                     <div
                       key={`course-${idx}`}
-                      className="rounded-lg border border-slate-200 bg-white px-3 py-2"
+                      className="px-3 py-2 bg-white border rounded-lg border-slate-200"
                     >
                       <div className="font-medium text-slate-900">
                         {course.title}
@@ -465,7 +465,7 @@ export default function ApplyPage() {
                           href={course.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="mt-1 inline-flex text-xs font-semibold text-blue-600 hover:text-blue-700"
+                          className="inline-flex mt-1 text-xs font-semibold text-blue-600 hover:text-blue-700"
                         >
                           View course →
                         </a>

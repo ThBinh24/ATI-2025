@@ -153,7 +153,7 @@ const JobsPage: React.FC = () => {
   }
 
   const jobCards = (jobList: any[]) => (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-3">
       {jobList.map((job) => (
         <div
           key={job.id}
@@ -166,21 +166,23 @@ const JobsPage: React.FC = () => {
               </h2>
               <p className="text-sm text-slate-500">{job.company_name}</p>
             </div>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide ${
-                job.published || job.status === "approved"
-                  ? "bg-emerald-100 text-emerald-700"
-                  : job.status === "rejected"
-                  ? "bg-rose-100 text-rose-600"
-                  : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              {job.published || job.status === "approved"
-                ? "Published"
-                : job.status
-                ? job.status
-                : "Pending"}
-            </span>
+            {user?.role !== "student" && (
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide ${
+                  job.published || job.status === "approved"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : job.status === "rejected"
+                    ? "bg-rose-100 text-rose-600"
+                    : "bg-amber-100 text-amber-700"
+                }`}
+              >
+                {job.published || job.status === "approved"
+                  ? "Published"
+                  : job.status
+                  ? job.status
+                  : "Pending"}
+              </span>
+            )}
           </div>
           <p className="mt-3 overflow-hidden text-sm whitespace-pre-line text-slate-600 max-h-32">
             {job.jd_text || "(No JD provided)"}
@@ -253,7 +255,7 @@ const JobsPage: React.FC = () => {
   );
 
   const appliedCards = (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="grid gap-4 md:grid-cols-3">
       {applications.map((record: any) => (
         <div
           key={record.id}
@@ -268,15 +270,11 @@ const JobsPage: React.FC = () => {
                 {record.job_company || "Unknown company"}
               </p>
             </div>
-            <span
-              className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide ${
-                record.passed
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              {record.passed ? "Passed" : "Needs review"}
-            </span>
+            {Boolean(record.passed) && (
+              <span className="rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide bg-emerald-100 text-emerald-700">
+                Passed
+              </span>
+            )}
           </div>
           <div className="mt-3 space-y-1 text-sm text-slate-600">
             <div>

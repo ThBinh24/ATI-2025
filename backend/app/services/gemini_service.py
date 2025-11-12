@@ -320,3 +320,62 @@ def generate_job_description_with_gemini(prompt: str) -> Optional[str]:
         return None
     return (getattr(result, "text", "") or "").strip()
 
+
+def generate_profile_blueprint(
+    field: str,
+    position: str,
+    style: str,
+    language: str,
+    notes: str = "",
+) -> Optional[Dict[str, Any]]:
+    if not gemini_available():
+        return None
+    schema = json.dumps(
+        {
+            "name": "string",
+            "headline": "string",
+            "contact_block": "string",
+            "summary": "string (60-90 words)",
+            "experiences": [
+                {
+                    "title": "string",
+                    "company": "string",
+                    "period": "string",
+                    "achievements": ["bullet 1", "bullet 2", "bullet 3"],
+                }
+            ],
+            "skills": ["skill"],
+            "projects": [{"name": "string", "description": "string"}],
+            "education": [{"school": "string", "degree": "string", "period": "string"}],
+        },
+        indent=2,
+    )
+    prompt = f"""
+You are an ATS resume writer. Create JSON ONLY following this schema:
+{schema}
+
+Requirements:
+- Summary 60-90 words, language: {language}.
+- Exactly 2 experiences, each with 3 concise CAR bullets (max 22 words).
+- Skills 6-8 concise nouns/phrases.
+- Projects 0-2 entries.
+- Return valid JSON with no explanation outside the JSON.
+
+Candidate goal:
+- Field: {field}
+- Position: {position}
+- Style/Tone: {style}
+- Extra notes: {notes or 'N/A'}
+"""
+    try:
+        result = _MODEL.generate_content(prompt)  # type: ignore[attr-defined]
+    except Exception:
+        return None
+    raw_text = _clean_json_text((getattr(result, "text", "") or "").strip())
+    if not raw_text:
+        return None
+    try:
+        return json.loads(raw_text)
+    except Exception:
+        return None
+

@@ -179,3 +179,53 @@ export const unbanUser = (userId: number) =>
 export const listBannedUsers = () => api.get("/auth/users/banned");
 export const downloadJobAttachment = (jobId: number) =>
   api.get(`/jobs/${jobId}/attachment`, { responseType: "blob" });
+
+export interface ProfileTemplate {
+  id: string;
+  name: string;
+  version: string;
+  style: string;
+  description?: string;
+  contract?: Record<string, unknown>;
+}
+
+export interface ProfileGeneratePayload {
+  field: string;
+  position: string;
+  style: string;
+  language?: string;
+  template_id?: string;
+  notes?: string;
+}
+
+export interface ProfileDraft {
+  id: number;
+  template_id: string;
+  template_version: string;
+  schema_version: string;
+  data: Record<string, any>;
+}
+
+export const listProfileTemplates = () =>
+  api.get<ProfileTemplate[]>("/profiles/templates");
+
+export const generateProfileDraft = (payload: ProfileGeneratePayload) =>
+  api.post<ProfileDraft>("/profiles/generate", payload);
+
+export const getProfileDraft = (draftId: number) =>
+  api.get<ProfileDraft>(`/profiles/${draftId}`);
+
+export const updateProfileDraft = (
+  draftId: number,
+  payload: { template_id?: string; data: Record<string, any> },
+) => api.put<ProfileDraft>(`/profiles/${draftId}`, payload);
+
+export const renderProfileDraft = (
+  draftId: number,
+  templateId?: string,
+) =>
+  api.post<{ html: string; css: string; template_version: string }>(
+    `/profiles/${draftId}/render`,
+    {},
+    { params: templateId ? { template_id: templateId } : undefined },
+  );

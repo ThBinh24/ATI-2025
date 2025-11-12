@@ -1,5 +1,6 @@
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, EmailStr
-from typing import List, Optional
 
 
 class UserOut(BaseModel):
@@ -102,3 +103,40 @@ class JobDescriptionRequest(BaseModel):
 class JobDescriptionResponse(BaseModel):
     jd_text: str
     source: str = "gemini"
+
+
+class ProfileTemplateOut(BaseModel):
+    id: str
+    name: str
+    version: str
+    style: str
+    description: Optional[str] = ""
+    contract: Dict[str, Any] = {}
+
+
+class ProfileGenerateRequest(BaseModel):
+    field: str
+    position: str
+    style: str = "modern"
+    language: str = "English"
+    template_id: Optional[str] = None
+    notes: Optional[str] = ""
+
+
+class ProfileDraftOut(BaseModel):
+    id: int
+    template_id: str
+    template_version: str
+    schema_version: str
+    data: Dict[str, Any]
+
+
+class ProfileUpdateRequest(BaseModel):
+    template_id: Optional[str] = None
+    data: Dict[str, Any]
+
+
+class ProfileRenderResponse(BaseModel):
+    html: str
+    css: str
+    template_version: str

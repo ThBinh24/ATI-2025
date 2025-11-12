@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: ./backend
+    container_name: cvmatcher-backend
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/jobs.db:/app/jobs.db
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: cvmatcher-frontend
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_BASE_URL=http://backend:8000
+    ports:
+      - "5173:80"

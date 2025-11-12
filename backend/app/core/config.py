@@ -35,3 +35,9 @@ CV_UPLOAD_DIR = os.getenv(
     ),
 )
 GEMINI_MODEL_INTERVIEW = os.getenv("GEMINI_MODEL_INTERVIEW", "gemini-2.5-flash")
+CV_TEMPLATE_DIR = os.getenv(
+    "CV_TEMPLATE_DIR",
+    os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "cv-template")
+    ),
+)

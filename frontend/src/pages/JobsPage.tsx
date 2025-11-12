@@ -9,6 +9,24 @@ import {
 } from "../services/backend";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../lib/time";
+import { sanitizeHtml } from "../lib/sanitize";
+
+function renderHtml(
+  value: string | null | undefined,
+  fallback: string,
+  className: string,
+) {
+  const sanitized = sanitizeHtml(value);
+  if (!sanitized) {
+    return <div className={className}>{fallback}</div>;
+  }
+  return (
+    <div
+      className={className}
+      dangerouslySetInnerHTML={{ __html: sanitized }}
+    />
+  );
+}
 
 const JobsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -184,9 +202,11 @@ const JobsPage: React.FC = () => {
               </span>
             )}
           </div>
-          <p className="mt-3 overflow-hidden text-sm whitespace-pre-line text-slate-600 max-h-32">
-            {job.jd_text || "(No JD provided)"}
-          </p>
+          {renderHtml(
+            job.jd_text,
+            "(No JD provided)",
+            "mt-3 text-sm text-slate-600 max-h-32 overflow-hidden break-words space-y-2 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_p]:mb-2 [&_li]:mb-1",
+          )}
           <div className="mt-4 space-y-2">
             {job.has_attachment && (
               <button
@@ -478,10 +498,18 @@ const JobsPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="font-semibold text-slate-800">CV text</span>
-                  <div className="p-3 mt-1 text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
-                    {detailsModal.cv_text ||
-                      "(No CV text captured. You may have uploaded a file only.)"}
-                  </div>
+                  {sanitizeHtml(detailsModal.cv_text) ? (
+                    <div
+                      className="p-3 mt-1 text-xs border rounded-lg border-slate-200 bg-slate-50 text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+                      dangerouslySetInnerHTML={{
+                        __html: sanitizeHtml(detailsModal.cv_text),
+                      }}
+                    />
+                  ) : (
+                    <div className="p-3 mt-1 text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
+                      (No CV text captured. You may have uploaded a file only.)
+                    </div>
+                  )}
                 </div>
                 <div>
                   <span className="font-semibold text-slate-800">
@@ -510,10 +538,11 @@ const JobsPage: React.FC = () => {
                   <span className="font-semibold text-slate-800">
                     Job description
                   </span>
-                  <div className="p-3 mt-1 text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
-                    {detailsModal.job_jd_text ||
-                      "(Job description not available.)"}
-                  </div>
+                  {renderHtml(
+                    detailsModal.job_jd_text,
+                    "(Job description not available.)",
+                    "p-3 mt-1 text-xs border rounded-lg border-slate-200 bg-slate-50 text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1",
+                  )}
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-6">

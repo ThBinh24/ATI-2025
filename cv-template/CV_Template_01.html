@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ name }} - CV</title>
+  <style>
+    .cv-template *, .cv-template *::before, .cv-template *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .cv-template {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      padding: 32px;
+      color: #1f2933;
+    }
+    .cv-template .cv-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      box-shadow: 0 18px 32px rgba(15,23,42,0.12);
+    }
+    .cv-template header {
+      background: #1f2933;
+      color: #ffffff;
+      padding: 38px 44px;
+    }
+    .cv-template header h1 {
+      font-size: 38px;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    .cv-template header .headline {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: #a5b4fc;
+    }
+    .cv-template header .contact {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #e2e8f0;
+    }
+    .cv-template main {
+      padding: 40px 44px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+    .cv-template section {
+      margin-bottom: 28px;
+    }
+    .cv-template .full-width {
+      grid-column: 1 / -1;
+    }
+    .cv-template h2 {
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: #0f172a;
+      margin-bottom: 14px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+    .cv-template p {
+      line-height: 1.7;
+      font-size: 14px;
+      color: #425466;
+    }
+    .cv-template .experience {
+      margin-bottom: 18px;
+    }
+    .cv-template .experience h3 {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    .cv-template .experience .meta {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .cv-template .experience ul {
+      padding-left: 18px;
+    }
+    .cv-template .experience li {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    .cv-template .skills ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .cv-template .skills li {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+    }
+    .cv-template .project {
+      margin-bottom: 16px;
+    }
+    .cv-template .education-item {
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="cv-template">
+    <div class="cv-wrapper">
+      <header>
+        <h1>{{ name }}</h1>
+        <div class="headline">{{ headline }}</div>
+        <div class="contact">{{ contact_block }}</div>
+      </header>
+      <main>
+        <section class="full-width">
+          <h2>Professional Summary</h2>
+          <p>{{ summary }}</p>
+        </section>
+        <section>
+          <h2>Experience</h2>
+          {% for exp in experiences %}
+          <div class="experience">
+            <h3>{{ exp.title }}</h3>
+            <div class="meta">{{ exp.company }} | {{ exp.period }}</div>
+            <ul>
+              {% for bullet in exp.achievements %}
+              <li>{{ bullet }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endfor %}
+        </section>
+        <section class="skills">
+          <h2>Key Skills</h2>
+          <ul>
+            {% for skill in skills %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+        <section>
+          <h2>Projects</h2>
+          {% for project in projects %}
+          <div class="project">
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+          </div>
+          {% endfor %}
+        </section>
+        <section>
+          <h2>Education</h2>
+          {% for edu in education %}
+          <div class="education-item">
+            <h3>{{ edu.school }}</h3>
+            <p>{{ edu.degree }}</p>
+            <span>{{ edu.period }}</span>
+          </div>
+          {% endfor %}
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

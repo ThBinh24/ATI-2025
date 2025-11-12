@@ -10,6 +10,8 @@ import {
 } from "../services/backend";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../lib/time";
+import { sanitizeHtml, htmlToPlainText } from "../lib/sanitize";
+import RichTextEditor from "../components/text-editor";
 
 export default function ApplyPage() {
   const { id } = useParams();
@@ -22,12 +24,14 @@ export default function ApplyPage() {
   const [downloadBusy, setDownloadBusy] = useState(false);
 
   const [cvText, setCvText] = useState("");
+  const [cvHtml, setCvHtml] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [err, setErr] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [applying, setApplying] = useState(false);
+  const jobDescriptionHtml = sanitizeHtml(job?.jd_text);
 
   const handleCancel = () => {
     setErr(null);
@@ -237,9 +241,16 @@ export default function ApplyPage() {
           <div className="text-xs font-semibold uppercase text-slate-500">
             Job description
           </div>
-          <p className="p-3 mt-2 text-sm whitespace-pre-wrap border rounded-lg border-slate-100 bg-slate-50 text-slate-700">
-            {job.jd_text || "(No description provided)"}
-          </p>
+          {jobDescriptionHtml ? (
+            <div
+              className="p-3 mt-2 text-sm border rounded-lg border-slate-100 bg-slate-50 text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+              dangerouslySetInnerHTML={{ __html: jobDescriptionHtml }}
+            />
+          ) : (
+            <p className="p-3 mt-2 text-sm border rounded-lg border-slate-100 bg-slate-50 text-slate-700">
+              (No description provided)
+            </p>
+          )}
         </div>
       </section>
 
@@ -267,11 +278,13 @@ export default function ApplyPage() {
             <label className="block mb-1 text-sm font-medium text-slate-700">
               Or paste CV text
             </label>
-            <textarea
-              className="w-full h-48 px-3 py-2 text-sm border rounded-lg border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            <RichTextEditor
+              content={cvHtml}
+              onChange={(value) => {
+                setCvHtml(value);
+                setCvText(htmlToPlainText(value));
+              }}
               placeholder="Paste your CV content here..."
-              value={cvText}
-              onChange={(e) => setCvText(e.target.value)}
             />
           </div>
         </div>
@@ -314,7 +327,7 @@ export default function ApplyPage() {
       {result && (
         <section className="p-6 space-y-4 bg-white border shadow-sm rounded-xl border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">
-            AI screening result
+            Model screening result
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             <div className="p-4 border rounded-lg border-slate-200 bg-slate-50">

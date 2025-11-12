@@ -1,5 +1,6 @@
 fastapi
 uvicorn[standard]
+python-multipart
 pydantic
 python-dotenv
 google-generativeai
@@ -15,3 +16,4 @@ rapidfuzz
 email-validator
 passlib
 python-jose[cryptography]
+jinja2

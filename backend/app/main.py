@@ -7,6 +7,7 @@ from app.api.v1.routes_auth import router as auth_router
 from app.api.v1.routes_applicants import router as applicants_router
 from app.api.v1.routes_email import router as email_router
 from app.api.v1.routes_interview import router as interview_router
+from app.api.v1.routes_profiles import router as profiles_router
 
 from app.core.db import get_connection, migrate
 _conn = get_connection()
@@ -22,3 +23,4 @@ app.include_router(cv_router, prefix="/api/v1")
 app.include_router(applicants_router, prefix="/api/v1")
 app.include_router(email_router, prefix="/api/v1")
 app.include_router(interview_router, prefix="/api/v1")
+app.include_router(profiles_router, prefix="/api/v1")

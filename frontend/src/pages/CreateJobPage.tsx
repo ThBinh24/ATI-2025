@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { CreateJobPayload, createJob } from "../services/backend";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import RichTextEditor from "../components/text-editor";
 
 const ACCEPTED_FILE_TYPES = [".pdf", ".doc", ".docx", ".zip"];
 
@@ -187,15 +188,15 @@ export default function CreateJobPage() {
           >
             Job description
           </label>
-          <textarea
-            id="jd_text"
-            rows={10}
-            className="w-full px-3 py-2 text-sm border rounded-lg border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-            placeholder="Describe responsibilities, requirements, and required skills..."
-            value={form.jd_text}
-            onChange={(e) =>
-              setForm((s) => ({ ...s, jd_text: e.target.value }))
+          <RichTextEditor
+            content={form.jd_text ?? ""}
+            onChange={(value) =>
+              setForm((state) => ({
+                ...state,
+                jd_text: value,
+              }))
             }
+            placeholder="Describe responsibilities, requirements, and required skills..."
           />
         </div>
         <div>

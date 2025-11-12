@@ -47,6 +47,14 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 Interview Practice
               </Link>
             )}
+            {user?.role === "student" && (
+              <Link
+                to="/profile-builder"
+                className="px-3 py-2 transition rounded hover:bg-slate-100"
+              >
+                AI Profile Builder
+              </Link>
+            )}
             {user?.role === "employer" && (
               <>
                 <Link
@@ -63,13 +71,10 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </Link>
               </>
             )}
-            
           </nav>
           <div className="flex items-center gap-3 text-sm text-slate-600">
             <div className="hidden text-right sm:block">
-              <div className="font-medium text-slate-800">
-                {cleanedName}
-              </div>
+              <div className="font-medium text-slate-800">{cleanedName}</div>
               <div className="text-xs tracking-wide uppercase text-slate-500">
                 {roleLabel}
               </div>

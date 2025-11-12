@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../lib/time";
+import { sanitizeHtml } from "../lib/sanitize";
 import {
   banUser,
   unbanUser,
@@ -397,7 +398,9 @@ const AdminDashboard: React.FC = () => {
             </div>
           ) : (
             <div className="p-6 space-y-6">
-              {pendingJobs.map((job) => (
+              {pendingJobs.map((job) => {
+                const descriptionHtml = sanitizeHtml(job.jd_text);
+                return (
                 <div
                   key={job.id}
                   className="p-6 border shadow-sm rounded-xl border-slate-200 bg-slate-50/80"
@@ -422,9 +425,14 @@ const AdminDashboard: React.FC = () => {
                       <div className="text-xs font-semibold uppercase text-slate-500">
                         Job description
                       </div>
-                      <p className="mt-1 whitespace-pre-wrap">
-                        {job.jd_text || "(no description provided)"}
-                      </p>
+                      {descriptionHtml ? (
+                        <div
+                          className="mt-1 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+                          dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+                        />
+                      ) : (
+                        <p className="mt-1">(no description provided)</p>
+                      )}
                     </div>
                     <div className="grid gap-3 md:grid-cols-2">
                       <div>
@@ -493,7 +501,8 @@ const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              );
+            })}
             </div>
           )}
         </div>

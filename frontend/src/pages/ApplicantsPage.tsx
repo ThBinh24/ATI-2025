@@ -8,6 +8,7 @@ import {
   sendApplicantInvite,
 } from "../services/backend";
 import { formatTime } from "../lib/time";
+import { sanitizeHtml } from "../lib/sanitize";
 
 const ApplicantsPage: React.FC = () => {
   const { id } = useParams();
@@ -31,6 +32,7 @@ const ApplicantsPage: React.FC = () => {
   const [sendingInvite, setSendingInvite] = useState(false);
   const [cvDetail, setCvDetail] = useState<any | null>(null);
   const [downloadingCvId, setDownloadingCvId] = useState<number | null>(null);
+  const sanitizedJobDescription = sanitizeHtml(job?.jd_text);
 
   useEffect(() => {
     let mounted = true;
@@ -307,9 +309,16 @@ const ApplicantsPage: React.FC = () => {
             <div className="text-xs font-semibold uppercase text-slate-500">
               Job description
             </div>
-            <p className="p-3 mt-2 text-sm whitespace-pre-wrap border rounded-lg border-slate-100 bg-slate-50 text-slate-700">
-              {job.jd_text || "(no description provided)"}
-            </p>
+            {sanitizedJobDescription ? (
+              <div
+                className="p-3 mt-2 text-sm border rounded-lg border-slate-100 bg-slate-50 text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+                dangerouslySetInnerHTML={{ __html: sanitizedJobDescription }}
+              />
+            ) : (
+              <p className="p-3 mt-2 text-sm border rounded-lg border-slate-100 bg-slate-50 text-slate-700">
+                (no description provided)
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -626,10 +635,18 @@ const ApplicantsPage: React.FC = () => {
             <div className="mt-4 space-y-4 text-sm text-slate-700">
               <div>
                 <span className="font-semibold text-slate-800">CV text</span>
-                <div className="p-3 mt-1 text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
-                  {cvDetail.cv_text ||
-                    "(No CV text captured. This applicant may have uploaded a file only.)"}
-                </div>
+                {sanitizeHtml(cvDetail.cv_text) ? (
+                  <div
+                    className="p-3 mt-1 text-xs border rounded-lg border-slate-200 bg-slate-50 text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+                    dangerouslySetInnerHTML={{
+                      __html: sanitizeHtml(cvDetail.cv_text),
+                    }}
+                  />
+                ) : (
+                  <div className="p-3 mt-1 text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700">
+                    (No CV text captured. This applicant may have uploaded a file only.)
+                  </div>
+                )}
               </div>
               <div>
                 <span className="font-semibold text-slate-800">

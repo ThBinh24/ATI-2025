@@ -1,0 +1,16 @@
+[
+  {
+    "id": "classic",
+    "name": "Executive Classic",
+    "version": "1.0.0",
+    "style": "minimalist",
+    "description": "Two-column layout derived from provided CV template.",
+    "html": "CV_Template_01.html",
+    "css": [],
+    "contract": {
+      "required_slots": ["name", "headline", "summary"],
+      "repeaters": ["experiences", "projects", "skills", "education"],
+      "max_items": {"skills": 8, "experiences": 2, "projects": 2}
+    }
+  }
+]

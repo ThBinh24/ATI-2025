@@ -114,4 +114,23 @@ def migrate(conn: sqlite3.Connection):
         cur.execute("ALTER TABLE processed ADD COLUMN uploaded_file_path TEXT DEFAULT ''")
     except sqlite3.OperationalError:
         pass
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS profile_drafts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        field TEXT DEFAULT '',
+        position TEXT DEFAULT '',
+        style TEXT DEFAULT '',
+        language TEXT DEFAULT '',
+        template_id TEXT DEFAULT '',
+        schema_version TEXT DEFAULT '',
+        template_version TEXT DEFAULT '',
+        data_json TEXT,
+        created_at TEXT,
+        updated_at TEXT
+    )""")
+    try:
+        cur.execute("ALTER TABLE profile_drafts ADD COLUMN language TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
     conn.commit()

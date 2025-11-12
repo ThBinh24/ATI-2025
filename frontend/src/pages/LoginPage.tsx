@@ -49,7 +49,7 @@ const LoginPage: React.FC = () => {
         )}
         {error && (
           <div className="px-4 py-2 mt-4 text-sm border rounded border-rose-200 bg-rose-50 text-rose-700">
-            You have been banned! Reason: {error}
+            Login failed: {error}
           </div>
         )}
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>

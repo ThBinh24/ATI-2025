@@ -5,25 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ name }} - CV</title>
   <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --ink: #1f2933;
+      --accent: #1f2933;
+      --accent-light: #a5b4fc;
+    }
     .cv-template *, .cv-template *::before, .cv-template *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     .cv-template {
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
+      font-family: "Inter", Arial, sans-serif;
+      background: var(--bg);
       padding: 32px;
-      color: #1f2933;
+      color: var(--ink);
     }
     .cv-template .cv-wrapper {
       max-width: 900px;
       margin: 0 auto;
-      background: #ffffff;
+      background: var(--card);
       box-shadow: 0 18px 32px rgba(15,23,42,0.12);
     }
     .cv-template header {
-      background: #1f2933;
+      background: var(--accent);
       color: #ffffff;
       padding: 38px 44px;
     }
@@ -36,35 +43,45 @@
       font-size: 16px;
       text-transform: uppercase;
       letter-spacing: 4px;
-      color: #a5b4fc;
+      color: var(--accent-light);
     }
     .cv-template header .contact {
       margin-top: 16px;
       font-size: 14px;
       color: #e2e8f0;
+      line-height: 1.6;
     }
     .cv-template main {
       padding: 40px 44px;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
+      display: flex;
+      flex-wrap: wrap;
       gap: 32px;
+      align-items: flex-start;
+      page-break-inside: avoid;
     }
     .cv-template section {
       margin-bottom: 28px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .cv-template section:last-child {
+      margin-bottom: 0;
     }
     .cv-template .full-width {
-      grid-column: 1 / -1;
+      flex: 1 1 100%;
     }
     .cv-template h2 {
       text-transform: uppercase;
-      font-size: 14px;
-      letter-spacing: 0.2em;
+      font-size: 13px;
+      letter-spacing: 0.22em;
       color: #0f172a;
       margin-bottom: 14px;
       border-bottom: 2px solid #e2e8f0;
       padding-bottom: 6px;
     }
-    .cv-template p {
+    .cv-template p,
+    .cv-template li,
+    .cv-template span {
       line-height: 1.7;
       font-size: 14px;
       color: #425466;
@@ -73,8 +90,9 @@
       margin-bottom: 18px;
     }
     .cv-template .experience h3 {
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 2px;
+      color: #111827;
     }
     .cv-template .experience .meta {
       font-size: 13px;
@@ -86,7 +104,6 @@
     }
     .cv-template .experience li {
       margin-bottom: 6px;
-      font-size: 14px;
     }
     .cv-template .skills ul {
       list-style: none;
@@ -102,15 +119,113 @@
       border-radius: 999px;
       font-size: 13px;
     }
-    .cv-template .project {
+    .cv-template .project,
+    .cv-template .education-item,
+    .cv-template .cert-item {
       margin-bottom: 16px;
     }
-    .cv-template .education-item {
-      margin-bottom: 16px;
+    .cv-template .project h3,
+    .cv-template .education-item h3,
+    .cv-template .cert-item h3 {
+      font-size: 16px;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    .cv-template .column {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .cv-template .column-main {
+      flex: 1 1 63%;
+      max-width: 63%;
+    }
+    .cv-template .column-side {
+      flex: 1 1 32%;
+      max-width: 32%;
+    }
+    @media print {
+      .cv-template {
+        padding: 0;
+        background: #ffffff;
+      }
+      .cv-template .cv-wrapper {
+        box-shadow: none;
+      }
+      .cv-template main {
+        page-break-after: always;
+      }
     }
   </style>
 </head>
 <body>
+  {% macro render_block(block) %}
+    {% if block.id == "summary" and summary %}
+      <section class="full-width" data-block="summary">
+        <h2>{{ block.label }}</h2>
+        <p>{{ summary }}</p>
+      </section>
+    {% elif block.id == "experiences" and experiences %}
+      <section data-block="experiences">
+        <h2>{{ block.label }}</h2>
+        {% for exp in experiences %}
+          <div class="experience">
+            <h3>{{ exp.title }}</h3>
+            <div class="meta">{{ exp.company }}{% if exp.period %} | {{ exp.period }}{% endif %}</div>
+            {% if exp.achievements %}
+              <ul>
+                {% for bullet in exp.achievements %}
+                  <li>{{ bullet }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </section>
+    {% elif block.id == "projects" and projects %}
+      <section data-block="projects">
+        <h2>{{ block.label }}</h2>
+        {% for project in projects %}
+          <div class="project">
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+          </div>
+        {% endfor %}
+      </section>
+    {% elif block.id == "skills" and skills %}
+      <section class="skills" data-block="skills">
+        <h2>{{ block.label }}</h2>
+        <ul>
+          {% for skill in skills %}
+            {% set skill_name = skill.name if skill is mapping else skill %}
+            <li>{{ skill_name }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% elif block.id == "education" and education %}
+      <section data-block="education">
+        <h2>{{ block.label }}</h2>
+        {% for edu in education %}
+          <div class="education-item">
+            <h3>{{ edu.school }}</h3>
+            <p>{{ edu.degree }}</p>
+            <span>{{ edu.period }}</span>
+          </div>
+        {% endfor %}
+      </section>
+    {% elif block.id == "certifications" and certifications %}
+      <section data-block="certifications">
+        <h2>{{ block.label }}</h2>
+        {% for cert in certifications %}
+          <div class="cert-item">
+            <h3>{{ cert.name }}</h3>
+            <p>{{ cert.issuer }}</p>
+            <span>{{ cert.period }}</span>
+          </div>
+        {% endfor %}
+      </section>
+    {% endif %}
+  {% endmacro %}
   <div class="cv-template">
     <div class="cv-wrapper">
       <header>
@@ -118,52 +233,24 @@
         <div class="headline">{{ headline }}</div>
         <div class="contact">{{ contact_block }}</div>
       </header>
+      {% set enabled_blocks = blocks | selectattr("enabled") | list %}
+      {% set full_blocks = enabled_blocks | selectattr("placement", "equalto", "full") | list %}
+      {% set main_blocks = enabled_blocks | rejectattr("placement", "equalto", "side") | rejectattr("placement", "equalto", "full") | list %}
+      {% set side_blocks = enabled_blocks | selectattr("placement", "equalto", "side") | list %}
       <main>
-        <section class="full-width">
-          <h2>Professional Summary</h2>
-          <p>{{ summary }}</p>
-        </section>
-        <section>
-          <h2>Experience</h2>
-          {% for exp in experiences %}
-          <div class="experience">
-            <h3>{{ exp.title }}</h3>
-            <div class="meta">{{ exp.company }} | {{ exp.period }}</div>
-            <ul>
-              {% for bullet in exp.achievements %}
-              <li>{{ bullet }}</li>
-              {% endfor %}
-            </ul>
-          </div>
+        {% for block in full_blocks %}
+          {{ render_block(block) }}
+        {% endfor %}
+        <div class="column column-main">
+          {% for block in main_blocks %}
+            {{ render_block(block) }}
           {% endfor %}
-        </section>
-        <section class="skills">
-          <h2>Key Skills</h2>
-          <ul>
-            {% for skill in skills %}
-            <li>{{ skill }}</li>
-            {% endfor %}
-          </ul>
-        </section>
-        <section>
-          <h2>Projects</h2>
-          {% for project in projects %}
-          <div class="project">
-            <h3>{{ project.name }}</h3>
-            <p>{{ project.description }}</p>
-          </div>
+        </div>
+        <div class="column column-side">
+          {% for block in side_blocks %}
+            {{ render_block(block) }}
           {% endfor %}
-        </section>
-        <section>
-          <h2>Education</h2>
-          {% for edu in education %}
-          <div class="education-item">
-            <h3>{{ edu.school }}</h3>
-            <p>{{ edu.degree }}</p>
-            <span>{{ edu.period }}</span>
-          </div>
-          {% endfor %}
-        </section>
+        </div>
       </main>
     </div>
   </div>

@@ -17,3 +17,4 @@ email-validator
 passlib
 python-jose[cryptography]
 jinja2
+playwright

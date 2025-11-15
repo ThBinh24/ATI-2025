@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Corporate Clean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f0f0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+        }
+        
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 8px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .header .role {
+            font-size: 18px;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 25px;
+        }
+        
+        .contact-bar {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .contact-bar span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .content {
+            padding: 45px 50px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .section-header h2 {
+            font-size: 22px;
+            color: #2d3748;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .summary {
+            color: #4a5568;
+            font-size: 15px;
+            line-height: 1.8;
+            text-align: justify;
+        }
+        
+        .experience-card {
+            background: #f7fafc;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+        
+        .experience-card h3 {
+            color: #2d3748;
+            font-size: 19px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .company-info {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .experience-card ul {
+            margin-left: 20px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .experience-card li {
+            margin-bottom: 8px;
+        }
+        
+        .education-card {
+            background: #f7fafc;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #764ba2;
+        }
+        
+        .education-card h3 {
+            color: #2d3748;
+            font-size: 17px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        
+        .education-info {
+            color: #718096;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .education-card p {
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        
+        .skill-group h4 {
+            color: #2d3748;
+            font-size: 15px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .skill-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-badge {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #4a5568;
+        }
+        
+        .certifications-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .cert-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 4px;
+        }
+        
+        .cert-name {
+            color: #2d3748;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .cert-date {
+            color: #718096;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PHẠM THỊ D</h1>
+            <div class="role">Data Analyst | Business Intelligence</div>
+            <div class="contact-bar">
+                <span>✉ datanalyst@email.com</span>
+                <span>📞 0909 123 456</span>
+                <span>🔗 github.com/phamthid</span>
+                <span>📍 Hà Nội, Việt Nam</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">📋</div>
+                    <h2>Tóm tắt chuyên môn</h2>
+                </div>
+                <p class="summary">
+                    Data Analyst với 4 năm kinh nghiệm phân tích dữ liệu và xây dựng báo cáo 
+                    business intelligence. Thành thạo SQL, Python, Power BI và các công cụ 
+                    phân tích dữ liệu hiện đại. Có khả năng chuyển đổi dữ liệu phức tạp thành 
+                    insights có giá trị để hỗ trợ ra quyết định kinh doanh. Đam mê khám phá 
+                    patterns và xu hướng từ dữ liệu lớn.
+                </p>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">💼</div>
+                    <h2>Kinh nghiệm làm việc</h2>
+                </div>
+                
+                <div class="experience-card">
+                    <h3>Senior Data Analyst</h3>
+                    <div class="company-info">
+                        <span>🏢 Fintech Corp</span>
+                        <span>📅 03/2022 - Hiện tại</span>
+                    </div>
+                    <ul>
+                        <li>Xây dựng và maintain 30+ dashboards cho các departments</li>
+                        <li>Phân tích dữ liệu customer behavior, tăng retention 25%</li>
+                        <li>Tối ưu query performance, giảm 60% thời gian chạy reports</li>
+                        <li>Phát triển predictive models cho fraud detection</li>
+                        <li>Train và mentor 2 junior analysts</li>
+                    </ul>
+                </div>
+                
+                <div class="experience-card">
+                    <h3>Data Analyst</h3>
+                    <div class="company-info">
+                        <span>🏢 E-commerce Platform</span>
+                        <span>📅 06/2020 - 02/2022</span>
+                    </div>
+                    <ul>
+                        <li>Phân tích sales data và customer segmentation</li>
+                        <li>Tạo automated reports với Python và Power BI</li>
+                        <li>Collaborate với Marketing team để optimize campaigns</li>
+                        <li>Thực hiện A/B testing analysis cho product features</li>
+                    </ul>
+                </div>
+                
+                <div class="experience-card">
+                    <h3>Junior Data Analyst</h3>
+                    <div class="company-info">
+                        <span>🏢 Consulting Firm</span>
+                        <span>📅 01/2020 - 05/2020</span>
+                    </div>
+                    <ul>
+                        <li>Thu thập và làm sạch dữ liệu từ nhiều nguồn</li>
+                        <li>Tạo visualizations và báo cáo cho clients</li>
+                        <li>Hỗ trợ senior analysts trong các dự án lớn</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🎓</div>
+                    <h2>Học vấn</h2>
+                </div>
+                
+                <div class="education-card">
+                    <h3>Thạc sĩ Khoa học Dữ liệu</h3>
+                    <div class="education-info">Đại học Quốc gia Hà Nội | 2022 - 2024</div>
+                    <p>Chuyên ngành: Machine Learning & Data Mining</p>
+                </div>
+                
+                <div class="education-card">
+                    <h3>Cử nhân Toán Tin ứng dụng</h3>
+                    <div class="education-info">Đại học Bách Khoa Hà Nội | 2016 - 2020</div>
+                    <p>GPA: 3.7/4.0 - Luận văn: Ứng dụng ML trong dự đoán chứng khoán</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">⚡</div>
+                    <h2>Kỹ năng</h2>
+                </div>
+                
+                <div class="skills-container">
+                    <div class="skill-group">
+                        <h4>Programming & Tools</h4>
+                        <div class="skill-items">
+                            <span class="skill-badge">Python</span>
+                            <span class="skill-badge">SQL</span>
+                            <span class="skill-badge">R</span>
+                            <span class="skill-badge">Git</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-group">
+                        <h4>Data Visualization</h4>
+                        <div class="skill-items">
+                            <span class="skill-badge">Power BI</span>
+                            <span class="skill-badge">Tableau</span>
+                            <span class="skill-badge">Matplotlib</span>
+                            <span class="skill-badge">Seaborn</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-group">
+                        <h4>Databases</h4>
+                        <div class="skill-items">
+                            <span class="skill-badge">PostgreSQL</span>
+                            <span class="skill-badge">MySQL</span>
+                            <span class="skill-badge">MongoDB</span>
+                            <span class="skill-badge">BigQuery</span>
+                        </div>
+                    </div>
+                    
+                    <div class="skill-group">
+                        <h4>Libraries & Frameworks</h4>
+                        <div class="skill-items">
+                            <span class="skill-badge">Pandas</span>
+                            <span class="skill-badge">NumPy</span>
+                            <span class="skill-badge">Scikit-learn</span>
+                            <span class="skill-badge">TensorFlow</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-icon">🏆</div>
+                    <h2>Chứng chỉ</h2>
+                </div>
+                
+                <div class="certifications-list">
+                    <div class="cert-item">
+                        <span class="cert-name">Microsoft Certified: Data Analyst Associate</span>
+                        <span class="cert-date">2023</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="cert-name">Google Data Analytics Professional Certificate</span>
+                        <span class="cert-date">2022</span>
+                    </div>
+                    <div class="cert-item">
+                        <span class="cert-name">IBM Data Science Professional Certificate</span>
+                        <span class="cert-date">2021</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

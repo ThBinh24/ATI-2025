@@ -129,14 +129,26 @@ class ProfileDraftOut(BaseModel):
     template_version: str
     schema_version: str
     data: Dict[str, Any]
+    blocks: List[Dict[str, Any]]
 
 
 class ProfileUpdateRequest(BaseModel):
     template_id: Optional[str] = None
     data: Dict[str, Any]
+    blocks: Optional[List[Dict[str, Any]]] = None
 
 
 class ProfileRenderResponse(BaseModel):
     html: str
     css: str
     template_version: str
+
+
+class ProfileDraftSummary(BaseModel):
+    id: int
+    template_id: str
+    template_version: str
+    name: Optional[str] = ""
+    headline: Optional[str] = ""
+    updated_at: Optional[str] = None
+    created_at: Optional[str] = None

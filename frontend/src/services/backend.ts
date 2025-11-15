@@ -180,13 +180,40 @@ export const listBannedUsers = () => api.get("/auth/users/banned");
 export const downloadJobAttachment = (jobId: number) =>
   api.get(`/jobs/${jobId}/attachment`, { responseType: "blob" });
 
+export interface ProfileTemplateContractField {
+  id: string;
+  label: string;
+  type: "text" | "textarea" | string;
+  maxLength?: number;
+}
+
+export interface ProfileTemplateBlock {
+  id: string;
+  label: string;
+  type: string;
+  placement?: "full" | "main" | "side";
+  required?: boolean;
+  optional?: boolean;
+  removable?: boolean;
+  min?: number;
+  max?: number;
+  item_label?: string;
+  fields?: ProfileTemplateContractField[];
+}
+
+export interface ProfileTemplateContract {
+  schema_version?: string;
+  default_order?: string[];
+  blocks?: ProfileTemplateBlock[];
+}
+
 export interface ProfileTemplate {
   id: string;
   name: string;
   version: string;
   style: string;
   description?: string;
-  contract?: Record<string, unknown>;
+  contract?: ProfileTemplateContract;
 }
 
 export interface ProfileGeneratePayload {
@@ -204,6 +231,29 @@ export interface ProfileDraft {
   template_version: string;
   schema_version: string;
   data: Record<string, any>;
+  blocks: ProfileBlockState[];
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface ProfileDraftSummary {
+  id: number;
+  template_id: string;
+  template_version: string;
+  name?: string;
+  headline?: string;
+  updated_at?: string;
+  created_at?: string;
+}
+
+export interface ProfileBlockState {
+  id: string;
+  label: string;
+  type: string;
+  placement?: string;
+  enabled: boolean;
+  order?: number;
+  config?: ProfileTemplateBlock;
 }
 
 export const listProfileTemplates = () =>
@@ -217,7 +267,11 @@ export const getProfileDraft = (draftId: number) =>
 
 export const updateProfileDraft = (
   draftId: number,
-  payload: { template_id?: string; data: Record<string, any> },
+  payload: {
+    template_id?: string;
+    data: Record<string, any>;
+    blocks?: ProfileBlockState[];
+  },
 ) => api.put<ProfileDraft>(`/profiles/${draftId}`, payload);
 
 export const renderProfileDraft = (
@@ -229,3 +283,15 @@ export const renderProfileDraft = (
     {},
     { params: templateId ? { template_id: templateId } : undefined },
   );
+
+export const exportProfilePdf = (draftId: number, templateId?: string) =>
+  api.get(`/profiles/${draftId}/export/pdf`, {
+    params: templateId ? { template_id: templateId } : undefined,
+    responseType: "blob",
+  });
+
+export const listProfileDraftsForUser = () =>
+  api.get<ProfileDraftSummary[]>("/profiles/drafts");
+
+export const deleteProfileDraft = (draftId: number) =>
+  api.delete(`/profiles/${draftId}`);

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CV - Minimal Classic</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 40px 20px;
+        font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+          "Helvetica Neue", sans-serif;
+        background: #f5f5f5;
+        color: #1f2937;
+      }
+      .cv-template-02 .cv-wrapper {
+        max-width: 860px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 15px 45px rgba(15, 23, 42, 0.15);
+        overflow: hidden;
+      }
+      .cv-template-02 .cv-header {
+        background: linear-gradient(135deg, #1d3557, #2c3e50);
+        color: #ffffff;
+        text-align: center;
+        padding: 48px 40px 36px;
+      }
+      .cv-template-02 .cv-header h1 {
+        margin: 0;
+        font-size: 34px;
+        letter-spacing: 0.5px;
+      }
+      .cv-template-02 .cv-header .headline {
+        margin: 12px 0 0;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.4px;
+      }
+      .cv-template-02 .contact-info {
+        margin-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 20px;
+        font-size: 16px;
+        opacity: 0.9;
+      }
+      .cv-template-02 main {
+        padding: 40px 48px 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .cv-template-02 .section {
+        padding-bottom: 18px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .cv-template-02 .section:last-child {
+        border-bottom: none;
+      }
+      .cv-template-02 .section h2 {
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: #374151;
+        margin: 0 0 14px;
+        text-transform: uppercase;
+      }
+      .cv-template-02 .summary-text {
+        line-height: 1.7;
+        color: #4b5563;
+      }
+      .cv-template-02 .job,
+      .cv-template-02 .education-item,
+      .cv-template-02 .cert-item,
+      .cv-template-02 .project {
+        margin-bottom: 18px;
+      }
+      .cv-template-02 .job:last-child,
+      .cv-template-02 .education-item:last-child,
+      .cv-template-02 .cert-item:last-child,
+      .cv-template-02 .project:last-child {
+        margin-bottom: 0;
+      }
+      .cv-template-02 .job h3,
+      .cv-template-02 .education-item h3,
+      .cv-template-02 .project h3,
+      .cv-template-02 .cert-item h3 {
+        margin: 0;
+        font-size: 17px;
+        color: #1f2937;
+      }
+      .cv-template-02 .job .meta,
+      .cv-template-02 .education-item .meta,
+      .cv-template-02 .cert-item .meta {
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin: 6px 0 10px;
+        letter-spacing: 0.4px;
+      }
+      .cv-template-02 ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #4b5563;
+      }
+      .cv-template-02 ul li {
+        margin-bottom: 8px;
+        line-height: 1.65;
+        font-size: 15px;
+      }
+      .cv-template-02 .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .cv-template-02 .skill-tag {
+        background: #e0e7ff;
+        color: #1e3a8a;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .cv-template-02 .project p {
+        margin: 8px 0 0;
+        line-height: 1.7;
+        color: #1f2937;
+        font-size: 15px;
+        position: relative;
+        padding-left: 18px;
+      }
+      .cv-template-02 .project p::before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        top: 2px;
+        font-size: 18px;
+        color: #1f2937;
+        line-height: 1;
+      }
+      @media print {
+        body {
+          padding: 0;
+          background: #ffffff;
+        }
+        .cv-template-02 .cv-wrapper {
+          box-shadow: none;
+          border-radius: 0;
+        }
+        .cv-template-02 .section {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% macro render_block(block) %}
+      {% if block.id == "summary" and summary %}
+        <section class="section summary" data-block="summary">
+          <h2>{{ block.label }}</h2>
+          <p class="summary-text">{{ summary }}</p>
+        </section>
+      {% elif block.id == "experiences" and experiences %}
+        <section class="section" data-block="experiences">
+          <h2>{{ block.label }}</h2>
+          {% for exp in experiences %}
+            <div class="job">
+              <h3>{{ exp.title }}</h3>
+              <div class="meta">
+                {{ exp.company }}{% if exp.period %} | {{ exp.period }}{% endif %}
+              </div>
+              {% if exp.achievements %}
+                <ul>
+                  {% for bullet in exp.achievements %}
+                    <li>{{ bullet }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </section>
+      {% elif block.id == "projects" and projects %}
+        <section class="section" data-block="projects">
+          <h2>{{ block.label }}</h2>
+          {% for project in projects %}
+            <div class="project">
+              <h3>{{ project.name }}</h3>
+              {% if project.description %}
+                <p>{{ project.description }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </section>
+      {% elif block.id == "skills" and skills %}
+        <section class="section" data-block="skills">
+          <h2>{{ block.label }}</h2>
+          <div class="skills">
+            {% for skill in skills %}
+              {% set skill_name = skill.name if skill is mapping else skill %}
+              <span class="skill-tag">{{ skill_name }}</span>
+            {% endfor %}
+          </div>
+        </section>
+      {% elif block.id == "education" and education %}
+        <section class="section" data-block="education">
+          <h2>{{ block.label }}</h2>
+          {% for edu in education %}
+            <div class="education-item">
+              <h3>{{ edu.school }}</h3>
+              <div class="meta">
+                {{ edu.degree }}{% if edu.period %} | {{ edu.period }}{% endif %}
+              </div>
+              {% if edu.description %}
+                <p>{{ edu.description }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </section>
+      {% elif block.id == "certifications" and certifications %}
+        <section class="section" data-block="certifications">
+          <h2>{{ block.label }}</h2>
+          {% for cert in certifications %}
+            <div class="cert-item">
+              <h3>{{ cert.name }}</h3>
+              <div class="meta">
+                {{ cert.issuer }}{% if cert.period %} | {{ cert.period }}{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endmacro %}
+
+    <div class="cv-template cv-template-02">
+      <div class="cv-wrapper">
+        <header class="cv-header">
+          <h1>{{ name or "Your Name" }}</h1>
+          {% if headline %}
+            <p class="headline">{{ headline }}</p>
+          {% endif %}
+          {% if contact_block %}
+            <div class="contact-info">
+              {% for line in contact_block.split('\n') %}
+                {% if line.strip() %}
+                  <span>{{ line.strip() }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </header>
+        <main>
+          {% if blocks %}
+            {% set enabled_blocks = blocks | selectattr("enabled") | sort(attribute="order") | list %}
+            {% for block in enabled_blocks %}
+              {{ render_block(block) }}
+            {% endfor %}
+          {% else %}
+            <section class="section summary">
+              <h2>Summary</h2>
+              <p class="summary-text">
+                Highly motivated professional with experience delivering modern digital
+                products. Use the builder to add your own content.
+              </p>
+            </section>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

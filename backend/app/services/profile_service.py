@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from app.core.db import get_connection
 from app.services import gemini_service, profile_templates
 
-PROFILE_SCHEMA_VERSION = "1.0.0"
+PROFILE_SCHEMA_VERSION = "2.0.0"
 
 
 def _now() -> str:
@@ -54,6 +54,13 @@ def _fallback(field: str, position: str) -> Dict[str, Any]:
                 "period": "2017 - 2021",
             }
         ],
+        "certifications": [
+            {
+                "name": "Certification Name",
+                "issuer": "Organization",
+                "period": "2023",
+            }
+        ],
     }
 
 
@@ -74,6 +81,7 @@ def insert_draft(
     template_id: str,
     template_version: str,
     data: Dict[str, Any],
+    blocks: List[Dict[str, Any]],
 ) -> int:
     conn = get_connection()
     cur = conn.cursor()
@@ -81,8 +89,8 @@ def insert_draft(
     cur.execute(
         """
         INSERT INTO profile_drafts
-        (user_id, field, position, style, language, template_id, schema_version, template_version, data_json, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (user_id, field, position, style, language, template_id, schema_version, template_version, data_json, blocks_json, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             user_id,
@@ -94,6 +102,7 @@ def insert_draft(
             PROFILE_SCHEMA_VERSION,
             template_version,
             json.dumps(data),
+            json.dumps(blocks),
             now,
             now,
         ),
@@ -113,7 +122,44 @@ def get_draft(draft_id: int, user_id: int):
     return dict(row) if row else None
 
 
-def update_draft(draft_id: int, user_id: int, data: Dict[str, Any], template_id: Optional[str] = None):
+def list_drafts(user_id: int) -> List[Dict[str, Any]]:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, template_id, template_version, created_at, updated_at, data_json FROM profile_drafts WHERE user_id=? ORDER BY updated_at DESC",
+        (user_id,),
+    )
+    rows = cur.fetchall()
+    return [dict(row) for row in rows]
+
+
+def delete_draft(draft_id: int, user_id: int) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "DELETE FROM profile_drafts WHERE id=? AND user_id=?",
+        (draft_id, user_id),
+    )
+    conn.commit()
+    return cur.rowcount > 0
+
+
+def _load_blocks_for_draft(draft: Dict[str, Any]) -> List[Dict[str, Any]]:
+    raw = draft.get("blocks_json") or "[]"
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError:
+        parsed = []
+    return profile_templates.merge_blocks_with_contract(parsed, draft["template_id"])
+
+
+def update_draft(
+    draft_id: int,
+    user_id: int,
+    data: Dict[str, Any],
+    blocks: Optional[List[Dict[str, Any]]] = None,
+    template_id: Optional[str] = None,
+):
     draft = get_draft(draft_id, user_id)
     if not draft:
         return None
@@ -121,18 +167,21 @@ def update_draft(draft_id: int, user_id: int, data: Dict[str, Any], template_id:
     template_version = draft["template_version"]
     if new_template != draft["template_id"]:
         template_version = profile_templates.get_template_version(new_template)
+    existing_blocks = _load_blocks_for_draft(draft)
+    next_blocks = profile_templates.merge_blocks_with_contract(blocks or existing_blocks, new_template)
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
         """
         UPDATE profile_drafts
-        SET template_id=?, template_version=?, data_json=?, updated_at=?
+        SET template_id=?, template_version=?, data_json=?, blocks_json=?, updated_at=?
         WHERE id=? AND user_id=?
         """,
         (
             new_template,
             template_version,
             json.dumps(data),
+            json.dumps(next_blocks),
             _now(),
             draft_id,
             user_id,
@@ -145,4 +194,6 @@ def update_draft(draft_id: int, user_id: int, data: Dict[str, Any], template_id:
 def render_draft(draft: Dict[str, Any], template_id: Optional[str] = None) -> Dict[str, str]:
     selected_template = template_id or draft["template_id"]
     data = json.loads(draft["data_json"] or "{}")
-    return profile_templates.render_template(selected_template, data)
+    blocks = _load_blocks_for_draft({**draft, "template_id": selected_template})
+    context = {**data, "blocks": blocks}
+    return profile_templates.render_template(selected_template, context)

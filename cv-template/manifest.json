@@ -2,15 +2,418 @@
   {
     "id": "classic",
     "name": "Executive Classic",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "style": "minimalist",
     "description": "Two-column layout derived from provided CV template.",
     "html": "CV_Template_01.html",
     "css": [],
     "contract": {
-      "required_slots": ["name", "headline", "summary"],
-      "repeaters": ["experiences", "projects", "skills", "education"],
-      "max_items": {"skills": 8, "experiences": 2, "projects": 2}
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Professional Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
+            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
+            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
+            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 12,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
+            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
+            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "dual-column",
+    "name": "Dual Column Modern",
+    "version": "2.0.0",
+    "style": "two-column",
+    "description": "Bold two-column resume with dark sidebar and timeline experience.",
+    "html": "CV_Template_03.html",
+    "css": [],
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Professional Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
+            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
+            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
+            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 12,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
+            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
+            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 400 }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
+            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "minimal-classic",
+    "name": "Minimal Classic",
+    "version": "2.0.0",
+    "style": "single-column",
+    "description": "Single-column layout with dark hero header and chip-style skills.",
+    "html": "CV_Template_02.html",
+    "css": [],
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Professional Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
+            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
+            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
+            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 12,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
+            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
+            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "fusion-pro",
+    "name": "Fusion Pro",
+    "version": "2.0.0",
+    "style": "gradient-sidebar",
+    "description": "Bold resume with gradient sidebar inspired by Fusion Pro layout.",
+    "html": "CV_Template_04.html",
+    "css": [],
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
+            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
+            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
+            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 12,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
+            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
+            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
+            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
+            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+          ]
+        }
+      ]
     }
   }
 ]

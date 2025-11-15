@@ -126,11 +126,16 @@ def migrate(conn: sqlite3.Connection):
         schema_version TEXT DEFAULT '',
         template_version TEXT DEFAULT '',
         data_json TEXT,
+        blocks_json TEXT,
         created_at TEXT,
         updated_at TEXT
     )""")
     try:
         cur.execute("ALTER TABLE profile_drafts ADD COLUMN language TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
+    try:
+        cur.execute("ALTER TABLE profile_drafts ADD COLUMN blocks_json TEXT")
     except sqlite3.OperationalError:
         pass
     conn.commit()

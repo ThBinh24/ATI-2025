@@ -59,6 +59,7 @@ python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+playwright install chromium  # required once for PDF export
 ```
 
 Create `backend/.env` (see the next section) and start the API:

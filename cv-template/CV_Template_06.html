@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Modern Sidebar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: #e8eaf6;
+            padding: 30px 15px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            display: flex;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #283593;
+            color: white;
+            padding: 0;
+        }
+        
+        .profile-section {
+            background: #1a237e;
+            padding: 40px 25px;
+            text-align: center;
+        }
+        
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #5c6bc0;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+        
+        .profile-section h1 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .profile-section .title {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .sidebar-content {
+            padding: 30px 25px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-section h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            opacity: 0.85;
+        }
+        
+        .contact-icon {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .progress-item {
+            margin-bottom: 18px;
+        }
+        
+        .progress-label {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .progress-bar {
+            height: 5px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #7986cb;
+            border-radius: 3px;
+        }
+        
+        .language-item {
+            margin-bottom: 12px;
+            font-size: 13px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .language-item::before {
+            content: '•';
+            position: absolute;
+            left: 5px;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 45px 40px;
+        }
+        
+        .intro {
+            margin-bottom: 35px;
+            color: #424242;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section h2 {
+            color: #283593;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #7986cb;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .job-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+        
+        .job-title {
+            color: #212121;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        
+        .job-date {
+            color: #757575;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .job-company {
+            color: #616161;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .job-description {
+            color: #616161;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .job-item ul {
+            margin-left: 20px;
+            color: #616161;
+            font-size: 13px;
+        }
+        
+        .job-item li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+        
+        .education-item {
+            margin-bottom: 20px;
+        }
+        
+        .education-title {
+            color: #212121;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .education-meta {
+            color: #757575;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        
+        .education-description {
+            color: #616161;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="profile-section">
+                <div class="avatar">👨‍💼</div>
+                <h1>HỒ VĂN E</h1>
+                <div class="title">Project Manager</div>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Liên hệ</h3>
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <span>hovane@email.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📱</span>
+                        <span>0938 765 432</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">🌐</span>
+                        <span>linkedin.com/in/hovane</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <span>TP. Hồ Chí Minh</span>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Kỹ năng</h3>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Project Management</span>
+                            <span>90%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Agile/Scrum</span>
+                            <span>95%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Team Leadership</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>Risk Management</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Công cụ</h3>
+                    <div class="language-item">Jira / Confluence</div>
+                    <div class="language-item">MS Project</div>
+                    <div class="language-item">Trello / Asana</div>
+                    <div class="language-item">Slack / Teams</div>
+                    <div class="language-item">Google Workspace</div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Ngôn ngữ</h3>
+                    <div class="language-item">Tiếng Việt - Bản ngữ</div>
+                    <div class="language-item">Tiếng Anh - TOEIC 850</div>
+                    <div class="language-item">Tiếng Trung - HSK 4</div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>Chứng chỉ</h3>
+                    <div class="language-item">PMP Certified</div>
+                    <div class="language-item">Scrum Master (PSM I)</div>
+                    <div class="language-item">PRINCE2 Foundation</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="intro">
+                <strong>Project Manager</strong> với hơn 7 năm kinh nghiệm quản lý các dự án 
+                công nghệ từ nhỏ đến lớn. Chuyên về Agile/Scrum methodology, có khả năng lãnh 
+                đạo cross-functional teams và đảm bảo dự án hoàn thành đúng timeline, budget. 
+                Thành công deliver 30+ projects với tổng giá trị hơn 50 tỷ đồng.
+            </div>
+            
+            <div class="section">
+                <h2>Kinh nghiệm làm việc</h2>
+                
+                <div class="job-item">
+                    <div class="job-header">
+                        <div class="job-title">Senior Project Manager</div>
+                        <div class="job-date">01/2021 - Hiện tại</div>
+                    </div>
+                    <div class="job-company">Tech Solutions JSC</div>
+                    <div class="job-description">
+                        Quản lý portfolio gồm 8 dự án song song, tổng ngân sách 30 tỷ đồng/năm
+                    </div>
+                    <ul>
+                        <li>Lead team 50+ members (developers, designers, QA, BA)</li>
+                        <li>Triển khai Agile transformation cho toàn bộ organization</li>
+                        <li>Tăng on-time delivery rate từ 65% lên 92%</li>
+                        <li>Giảm project costs 20% thông qua process optimization</li>
+                        <li>Stakeholder management với C-level executives và clients</li>
+                    </ul>
+                </div>
+                
+                <div class="job-item">
+                    <div class="job-header">
+                        <div class="job-title">Project Manager</div>
+                        <div class="job-date">06/2018 - 12/2020</div>
+                    </div>
+                    <div class="job-company">Digital Agency Vietnam</div>
+                    <div class="job-description">
+                        Quản lý 3-5 dự án đồng thời cho các khách hàng enterprise
+                    </div>
+                    <ul>
+                        <li>Deliver 15+ web/mobile projects thành công</li>
+                        <li>Coordination giữa technical team và business stakeholders</li>
+                        <li>Budget planning và resource allocation</li>
+                        <li>Risk assessment và mitigation strategies</li>
+                    </ul>
+                </div>
+                
+                <div class="job-item">
+                    <div class="job-header">
+                        <div class="job-title">Assistant Project Manager</div>
+                        <div class="job-date">03/2017 - 05/2018</div>
+                    </div>
+                    <div class="job-company">Software Company ABC</div>
+                    <ul>
+                        <li>Hỗ trợ PM trong planning và execution</li>
+                        <li>Project documentation và reporting</li>
+                        <li>Sprint planning và daily standup facilitation</li>
+                        <li>Tracking progress và updating stakeholders</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Học vấn</h2>
+                
+                <div class="education-item">
+                    <div class="education-title">Thạc sĩ Quản trị Dự án</div>
+                    <div class="education-meta">Đại học Kinh tế TP.HCM | 2019 - 2021</div>
+                    <div class="education-description">
+                        Chuyên sâu về Project Management, Agile Methodologies
+                    </div>
+                </div>
+                
+                <div class="education-item">
+                    <div class="education-title">Cử nhân Công nghệ Thông tin</div>
+                    <div class="education-meta">Đại học Khoa học Tự nhiên | 2013 - 2017</div>
+                    <div class="education-description">
+                        GPA: 3.5/4.0 - Chuyên ngành: Hệ thống thông tin
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Dự án tiêu biểu</h2>
+                
+                <div class="job-item">
+                    <div class="job-title">E-commerce Platform Transformation</div>
+                    <div class="job-company">Enterprise Client | Budget: 12 tỷ VNĐ</div>
+                    <div class="job-description">
+                        Nâng cấp toàn bộ hệ thống e-commerce, migrate 2M users, 
+                        tích hợp 10+ payment gateways. Hoàn thành trước deadline 2 tuần.
+                    </div>
+                </div>
+                
+                <div class="job-item">
+                    <div class="job-title">Mobile Banking App</div>
+                    <div class="job-company">Bank XYZ | Budget: 8 tỷ VNĐ</div>
+                    <div class="job-description">
+                        Phát triển app banking iOS/Android phục vụ 500K+ users, 
+                        đạt 4.5★ rating sau 3 tháng launch.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

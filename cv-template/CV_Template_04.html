@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ name }} - CV</title>
+  <style>
+    .cv-template-04 * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .cv-template-04 {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #e2e8f0;
+      padding: 24px;
+      line-height: 1.55;
+      color: #2c3e50;
+    }
+    .cv-template-04 .container {
+      width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, 0.25);
+    }
+    .cv-template-04 .header {
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      color: #fff;
+      padding: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cv-template-04 .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,0 Q300,60 600,30 T1200,0 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"/></svg>') no-repeat bottom;
+      background-size: cover;
+      opacity: 0.9;
+    }
+    .cv-template-04 .header-content {
+      position: relative;
+      z-index: 1;
+    }
+    .cv-template-04 .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border: 4px solid rgba(255,255,255,0.5);
+    }
+    .cv-template-04 .avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .cv-template-04 .name {
+      font-size: 30px;
+      letter-spacing: 3px;
+    }
+    .cv-template-04 .title {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-top: 6px;
+      opacity: 0.9;
+    }
+    .cv-template-04 .contact-bar {
+      background: #ecf0f1;
+      padding: 14px 32px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 3px solid #3498db;
+    }
+    .cv-template-04 .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+    .cv-template-04 .contact-icon {
+      color: #3498db;
+      font-size: 18px;
+    }
+    .cv-template-04 .main-content {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      min-height: 100%;
+    }
+    .cv-template-04 .sidebar {
+      flex: 0 0 260px;
+      background: #34495e;
+      color: #fff;
+      padding: 24px 22px;
+    }
+    .cv-template-04 .content-main {
+      flex: 1;
+      padding: 32px;
+    }
+    .cv-template-04 .section {
+      margin-bottom: 26px;
+    }
+    .cv-template-04 .section-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #3498db;
+      color: #3498db;
+    }
+    .cv-template-04 .skill-item {
+      margin-bottom: 12px;
+    }
+    .cv-template-04 .skill-name {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .cv-template-04 .skill-bar {
+      height: 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.2);
+    }
+    .cv-template-04 .skill-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(to right, #3498db, #2ecc71);
+      width: calc(var(--skill-level, 80) * 1%);
+      transition: width 0.2s ease;
+    }
+    .cv-template-04 .sidebar-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .cv-template-04 .main-section {
+      margin-bottom: 30px;
+    }
+    .cv-template-04 .main-title {
+      font-size: 20px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: #2c3e50;
+      margin-bottom: 16px;
+      border-left: 4px solid #3498db;
+      padding-left: 12px;
+    }
+    .cv-template-04 .profile-text {
+      font-size: 13px;
+      color: #555;
+      background: #f8f9fa;
+      border-left: 4px solid #2ecc71;
+      border-radius: 8px;
+      padding: 16px;
+      line-height: 1.75;
+    }
+    .cv-template-04 .timeline {
+      position: relative;
+      padding-left: 30px;
+    }
+    .cv-template-04 .timeline::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #3498db, #2ecc71);
+    }
+    .cv-template-04 .timeline-item {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 22px;
+      position: relative;
+      transition: box-shadow 0.2s ease;
+    }
+    .cv-template-04 .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -27px;
+      top: 24px;
+      width: 14px;
+      height: 14px;
+      background: #3498db;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #3498db;
+    }
+    .cv-template-04 .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .cv-template-04 .position {
+      font-size: 15px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    .cv-template-04 .company {
+      font-size: 13px;
+      color: #3498db;
+      font-weight: 600;
+    }
+    .cv-template-04 .date {
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .cv-template-04 .description {
+      font-size: 12.5px;
+      color: #555;
+      margin-top: 8px;
+    }
+    .cv-template-04 .description ul {
+      margin-top: 8px;
+      margin-left: 18px;
+    }
+    .cv-template-04 .education-item {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #2ecc71;
+      margin-bottom: 16px;
+    }
+    .cv-template-04 .education-item h3 {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .cv-template-04 .education-item span {
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+    .cv-template-04 .cert-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .cv-template-04 .cert-item {
+      border: 1px solid #ecf0f1;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+    .cv-template-04 .cert-item h4 {
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #2c3e50;
+    }
+    .cv-template-04 .cert-item span {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    @media (max-width: 768px) {
+      .cv-template-04 .main-content {
+        flex-direction: column;
+      }
+    }
+    @media print {
+      .cv-template-04 {
+        background: #fff;
+        padding: 0;
+      }
+      .cv-template-04 .container {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+{% macro render_main_block(block) %}
+  {% if block.id == "summary" and summary %}
+    <div class="main-section" data-block="summary">
+      <div class="main-title">{{ block.label }}</div>
+      <div class="profile-text">{{ summary }}</div>
+    </div>
+  {% elif block.id == "experiences" and experiences %}
+    <div class="main-section" data-block="experiences">
+      <div class="main-title">{{ block.label }}</div>
+      <div class="timeline">
+        {% for exp in experiences %}
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div>
+                <div class="position">{{ exp.title }}</div>
+                <div class="company">{{ exp.company }}</div>
+              </div>
+              <div class="date">{{ exp.period }}</div>
+            </div>
+            <div class="description">
+              {% if exp.achievements %}
+                <ul>
+                  {% for bullet in exp.achievements %}
+                    <li>{{ bullet }}</li>
+                  {% endfor %}
+                </ul>
+              {% elif exp.description %}
+                <p>{{ exp.description }}</p>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% elif block.id == "projects" and projects %}
+    <div class="main-section" data-block="projects">
+      <div class="main-title">{{ block.label }}</div>
+      <div class="timeline">
+        {% for project in projects %}
+          <div class="timeline-item">
+            <div class="position">{{ project.name }}</div>
+            <div class="description">
+              <p>{{ project.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% elif block.id == "education" and education %}
+    <div class="main-section" data-block="education">
+      <div class="main-title">{{ block.label }}</div>
+      {% for edu in education %}
+        <div class="education-item">
+          <h3>{{ edu.degree }}</h3>
+          <div style="color:#2ecc71;font-weight:600;">{{ edu.school }}</div>
+          <span>{{ edu.period }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% elif block.id == "certifications" and certifications %}
+    <div class="main-section" data-block="certifications">
+      <div class="main-title">{{ block.label }}</div>
+      <div class="cert-grid">
+        {% for cert in certifications %}
+          <div class="cert-item">
+            <h4>{{ cert.name }}</h4>
+            <span>{{ cert.issuer }}{% if cert.period %} • {{ cert.period }}{% endif %}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_sidebar_block(block) %}
+  {% if block.id == "skills" and skills %}
+    <div class="section" data-block="skills">
+      <div class="section-title">{{ block.label }}</div>
+      {% for skill in skills %}
+        {% set skill_name = skill.name if skill is mapping else skill %}
+        {% set skill_level = skill.level if skill is mapping else 80 %}
+        <div class="skill-item">
+          <div class="skill-name">
+            <span>{{ skill_name }}</span>
+            <span>{{ skill_level }}%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill" style="--skill-level: {{ skill_level }};"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% elif block.id == "education" and education %}
+    <div class="section" data-block="education">
+      <div class="section-title">{{ block.label }}</div>
+      {% for edu in education %}
+        <div class="sidebar-card">
+          <strong>{{ edu.degree }}</strong>
+          <div>{{ edu.school }}</div>
+          <small>{{ edu.period }}</small>
+        </div>
+      {% endfor %}
+    </div>
+  {% elif block.id == "certifications" and certifications %}
+    <div class="section" data-block="certifications">
+      <div class="section-title">{{ block.label }}</div>
+      {% for cert in certifications %}
+        <div class="sidebar-card">
+          <strong>{{ cert.name }}</strong>
+          <div>{{ cert.issuer }}</div>
+          <small>{{ cert.period }}</small>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% set enabled_blocks = blocks | selectattr("enabled") | list %}
+{% set full_blocks = enabled_blocks | selectattr("placement", "equalto", "full") | list %}
+{% set main_blocks = enabled_blocks | rejectattr("placement", "equalto", "side") | rejectattr("placement", "equalto", "full") | list %}
+{% set side_blocks = enabled_blocks | selectattr("placement", "equalto", "side") | list %}
+
+{% set contact_items = [] %}
+{% if contact_block %}
+  {% set contact_items = contact_block.split("•") %}
+{% endif %}
+
+<body>
+  <div class="cv-template-04">
+  <div class="container">
+      <div class="header">
+        <div class="header-content">
+        {% if photo_data_url %}
+          <div class="avatar">
+            <img src="{{ photo_data_url }}" alt="{{ name or 'Profile photo' }}" />
+          </div>
+        {% else %}
+          <div class="avatar">👤</div>
+        {% endif %}
+        <div class="name">{{ name }}</div>
+        <div class="title">{{ headline }}</div>
+      </div>
+    </div>
+    <div class="contact-bar">
+      {% if contact_items %}
+        {% for item in contact_items %}
+          <div class="contact-item">
+            <span class="contact-icon">•</span>
+            <span>{{ item.strip() }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="main-content">
+      <aside class="sidebar">
+        {% if not contact_items and contact_block %}
+          <div class="section">
+            <div class="section-title">Contact</div>
+            <div class="sidebar-card">{{ contact_block }}</div>
+          </div>
+        {% endif %}
+        {% for block in side_blocks %}
+          {{ render_sidebar_block(block) }}
+        {% endfor %}
+      </aside>
+      <div class="content-main">
+        {% for block in full_blocks %}
+          {{ render_main_block(block) }}
+        {% endfor %}
+        {% for block in main_blocks %}
+          {{ render_main_block(block) }}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  </div>
+</body>
+</html>

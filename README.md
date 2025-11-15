@@ -108,6 +108,23 @@ GEMINI_MODEL_INTERVIEW=gemini-2.5-flash
    - Employer: create or edit jobs, generate job descriptions at `/jobs/generator`, view applicants, and open `/interview/questions` for AI-generated question sets.
    - Student: explore jobs, run the AI check, apply for positions, and practise interviews at `/interview`.
 
+## AI Profile Builder & CV Templates
+
+The **Profile Builder** ( `/profile-builder` ) lets students/employers describe a target role and receive an editable draft CV. Each template lives in `cv-template/` with HTML/CSS plus metadata inside `cv-template/manifest.json`. Highlights:
+
+| Template ID | Name | Layout | Notes |
+|-------------|------|--------|-------|
+| `classic` | Executive Classic | 2-column | Minimal, constrained fonts, auto page-breaks. |
+| `dual-column` | Dual Column Modern | sidebar + main | Gradient sidebar, skill bars, per-page margins. |
+| `minimal-classic` | Minimal Classic | single column | Clean typography with chip-style skills. |
+| `fusion-pro` | Fusion Pro | sidebar + main | Gradient sidebar, skill progress bars, profile photo. |
+| `corporate-clean` | Corporate Clean | single column | Gradient hero header, card-style sections. |
+| `modern-sidebar` | Modern Sidebar | sidebar + main | Tight sidebar entries, flush-left across pages. |
+| `executive-premium` | Executive Premium | single column | Serif-inspired aesthetic with metallic accents. |
+| `corporate-blue` | Corporate Blue | single column | Bright blue accents, badge-style skills. |
+
+Each manifest entry can specify `pdf.margin` and `pdf.page_style` so templates that need full-bleed headers (e.g., Fusion Pro) get custom margins while others inherit defaults. When adding a new design, supply its HTML file, optional CSS, and block contract; the backend automatically injects per-template margin settings during PDF export through Playwright.
+
 ## AI and ML Pipeline
 
 - Skill extraction uses regex heuristics and the curated list in `backend/app/assets/skills.csv`.

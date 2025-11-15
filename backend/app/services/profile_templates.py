@@ -63,7 +63,7 @@ def get_template_contract(template_id: str) -> Dict[str, Any]:
     return entry.get("contract", {})
 
 
-def _resolve_template(template_id: str) -> Tuple[str, List[str], str, Dict[str, Any]]:
+def _resolve_template(template_id: str) -> Tuple[str, List[str], str, Dict[str, Any], Dict[str, Any]]:
     target = _get_manifest_entry(template_id)
     if not target:
         raise TemplateNotFound(template_id)
@@ -75,7 +75,8 @@ def _resolve_template(template_id: str) -> Tuple[str, List[str], str, Dict[str, 
         css_file = TEMPLATE_DIR / rel
         if css_file.exists():
             css_texts.append(css_file.read_text(encoding="utf-8"))
-    return html_path, css_texts, target.get("version", "1.0.0"), contract
+    pdf_settings = target.get("pdf", {})
+    return html_path, css_texts, target.get("version", "1.0.0"), contract, pdf_settings
 
 
 def _default_block_entry(block: Dict[str, Any], order: int) -> Dict[str, Any]:
@@ -140,14 +141,14 @@ def merge_blocks_with_contract(
 
 
 def render_template(template_id: str, payload: Dict[str, Any]) -> Dict[str, str]:
-    html_rel, css_texts, version, _contract = _resolve_template(template_id)
+    html_rel, css_texts, version, _contract, pdf_settings = _resolve_template(template_id)
     env = _jinja_env()
     template = env.get_template(html_rel)
     html = template.render(**payload)
     css = "\n".join(css_texts)
-    return {"html": html, "css": css, "template_version": version}
+    return {"html": html, "css": css, "template_version": version, "pdf": pdf_settings}
 
 
 def get_template_version(template_id: str) -> str:
-    _, _, version, _ = _resolve_template(template_id)
+    _, _, version, _, _ = _resolve_template(template_id)
     return version

@@ -57,12 +57,9 @@
       flex-wrap: wrap;
       gap: 32px;
       align-items: flex-start;
-      page-break-inside: avoid;
     }
     .cv-template section {
       margin-bottom: 28px;
-      break-inside: avoid;
-      page-break-inside: avoid;
     }
     .cv-template section:last-child {
       margin-bottom: 0;
@@ -153,7 +150,25 @@
         box-shadow: none;
       }
       .cv-template main {
-        page-break-after: always;
+        display: block;
+        padding: 32px 40px;
+      }
+      .cv-template .column,
+      .cv-template .column-main,
+      .cv-template .column-side {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+      .cv-template section {
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+      .cv-template .experience,
+      .cv-template .project,
+      .cv-template .education-item,
+      .cv-template .cert-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
       }
     }
   </style>

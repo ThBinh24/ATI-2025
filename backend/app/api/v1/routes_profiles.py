@@ -156,7 +156,16 @@ def export_profile_pdf(
     if not draft:
         raise HTTPException(status_code=404, detail="Draft not found.")
     rendered = profile_service.render_draft(draft, template_id)
-    pdf_bytes = pdf_service.render_pdf_from_html(rendered["html"], rendered.get("css"))
+    pdf_settings = rendered.get("pdf") or {}
+    pdf_margin = pdf_settings.get("margin")
+    pdf_page_style = pdf_settings.get("page_style")
+    pdf_options = pdf_service.PdfOptions(margin=pdf_margin) if pdf_margin else None
+    pdf_bytes = pdf_service.render_pdf_from_html(
+        rendered["html"],
+        rendered.get("css"),
+        pdf_options,
+        pdf_page_style,
+    )
     filename = f"profile_{draft_id}.pdf"
     headers = {"Content-Disposition": f"attachment; filename={filename}"}
     return StreamingResponse(BytesIO(pdf_bytes), media_type="application/pdf", headers=headers)

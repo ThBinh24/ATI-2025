@@ -1,148 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Corporate Blue CV</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-    body {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ name }} - Corporate Blue</title>
+    <style>
+      body {
+        margin: 0;
         background: #f5f7fa;
-        font-family: 'Inter', sans-serif;
-        margin: 40px 0;
-    }
-
-    .cv-container {
-        width: 900px;
-        margin: auto;
-        background: #fff;
-        box-shadow: 0 0 35px rgba(0,0,0,0.07);
-        border-radius: 14px;
-        padding: 45px 60px;
-    }
-
-    .header {
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        color: #1f2937;
+      }
+      .cv-template-08 {
+        padding: 32px 18px 40px;
+      }
+      .cv-template-08 .container {
+        max-width: 920px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+        padding: 48px 56px 56px;
+      }
+      .cv-template-08 .header {
         border-bottom: 3px solid #1d4e89;
-        padding-bottom: 25px;
-        margin-bottom: 30px;
-    }
-
-    .name {
+        padding-bottom: 24px;
+        margin-bottom: 32px;
+      }
+      .cv-template-08 .name {
         font-size: 36px;
         font-weight: 600;
-    }
-
-    .role {
+        margin: 0;
+      }
+      .cv-template-08 .headline {
         font-size: 18px;
         color: #1d4e89;
-        margin-top: 5px;
+        margin-top: 6px;
         font-weight: 500;
-    }
-
-    .contact {
-        margin-top: 10px;
-        font-size: 14px;
-        color: #555;
-    }
-
-    .section-title {
+      }
+      .cv-template-08 .contact {
+        margin-top: 14px;
+        font-size: 13px;
+        color: #4b5563;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px 24px;
+      }
+      .cv-template-08 .section {
+        margin-bottom: 32px;
+      }
+      .cv-template-08 .section:last-child {
+        margin-bottom: 0;
+      }
+      .cv-template-08 .section h2 {
+        margin: 0 0 18px;
         font-size: 20px;
         font-weight: 600;
         color: #1d4e89;
-        margin-top: 40px;
-        margin-bottom: 15px;
         border-left: 5px solid #1d4e89;
         padding-left: 12px;
-    }
-
-    p {
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+      .cv-template-08 .summary {
         line-height: 1.6;
         font-size: 14px;
-        margin: 8px 0;
-    }
-
-    .two-col {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 25px;
-    }
-
-    .exp-item {
-        margin-bottom: 20px;
-    }
-
-    .exp-pos {
-        font-weight: 600;
-        font-size: 15px;
-    }
-
-    .exp-company {
-        font-size: 14px;
-        color: #1d4e89;
-    }
-
-    .skill-badge {
+        color: #4b5563;
+        margin: 0;
+      }
+      .cv-template-08 .skill-badge {
         display: inline-block;
-        padding: 7px 12px;
+        padding: 6px 12px;
         background: #e8f1ff;
         color: #1d4e89;
-        border-radius: 8px;
-        margin: 5px;
-        font-size: 14px;
+        border-radius: 999px;
+        margin: 4px 6px 4px 0;
+        font-size: 13px;
         font-weight: 500;
-    }
-</style>
-</head>
+      }
+      .cv-template-08 .experience-item,
+      .cv-template-08 .project-item,
+      .cv-template-08 .education-item,
+      .cv-template-08 .cert-item {
+        margin-bottom: 20px;
+      }
+      .cv-template-08 .experience-item:last-child,
+      .cv-template-08 .project-item:last-child,
+      .cv-template-08 .education-item:last-child,
+      .cv-template-08 .cert-item:last-child {
+        margin-bottom: 0;
+      }
+      .cv-template-08 .experience-title,
+      .cv-template-08 .project-title,
+      .cv-template-08 .education-degree,
+      .cv-template-08 .cert-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 4px;
+      }
+      .cv-template-08 .experience-meta,
+      .cv-template-08 .project-meta,
+      .cv-template-08 .education-meta,
+      .cv-template-08 .cert-meta {
+        font-size: 13px;
+        color: #2563eb;
+        margin-bottom: 6px;
+      }
+      .cv-template-08 .experience-description,
+      .cv-template-08 .project-description,
+      .cv-template-08 .education-description,
+      .cv-template-08 .cert-description {
+        margin: 0;
+        font-size: 13px;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+      @media print {
+        body {
+          background: #ffffff;
+        }
+        .cv-template-08 {
+          padding: 20px 15px 30px;
+        }
+        .cv-template-08 .container {
+          box-shadow: none;
+        }
+        .cv-template-08 .section {
+          page-break-inside: auto;
+          break-inside: auto;
+        }
+        .cv-template-08 .experience-item,
+        .cv-template-08 .project-item,
+        .cv-template-08 .education-item,
+        .cv-template-08 .cert-item {
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% set contact_lines = [] %}
+    {% if contact_block %}
+      {% set contact_lines = contact_block.split('\\n') %}
+    {% endif %}
 
-<body>
-<div class="cv-container">
+    <div class="cv-template-08">
+      <div class="container">
+        <header class="header">
+          <h1 class="name">{{ name or "Your Name" }}</h1>
+          {% if headline %}
+            <div class="headline">{{ headline }}</div>
+          {% endif %}
+          {% if contact_lines %}
+            <div class="contact">
+              {% for line in contact_lines %}
+                {% if line.strip() %}
+                  <span>{{ line.strip() }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </header>
 
-    <div class="header">
-        <div class="name">Michael Adams</div>
-        <div class="role">Business Analyst</div>
-        <div class="contact">
-            Email: michael@example.com • Phone: +1 555 204 291  
-        </div>
+        {% if summary %}
+          <section class="section" data-block="summary">
+            <h2>Summary</h2>
+            <p class="summary">{{ summary }}</p>
+          </section>
+        {% endif %}
+
+        {% if skills %}
+          <section class="section" data-block="skills">
+            <h2>Skills</h2>
+            <div>
+              {% for skill in skills %}
+                {% set skill_name = skill.name if skill is mapping else skill %}
+                <span class="skill-badge">{{ skill_name }}</span>
+              {% endfor %}
+            </div>
+          </section>
+        {% endif %}
+
+        {% if experiences %}
+          <section class="section" data-block="experiences">
+            <h2>Experience</h2>
+            {% for exp in experiences %}
+              <div class="experience-item">
+                <div class="experience-title">{{ exp.title }}</div>
+                <div class="experience-meta">
+                  {{ exp.company }}{% if exp.period %} • {{ exp.period }}{% endif %}
+                </div>
+                {% if exp.achievements %}
+                  <ul style="margin: 0 0 0 18px; padding: 0; color: #4b5563;">
+                    {% for achievement in exp.achievements %}
+                      <li style="margin-bottom: 6px; font-size: 13px; line-height: 1.6;">
+                        {{ achievement }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% elif exp.description %}
+                  <p class="experience-description">{{ exp.description }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </section>
+        {% endif %}
+
+        {% if projects %}
+          <section class="section" data-block="projects">
+            <h2>Projects</h2>
+            {% for project in projects %}
+              <div class="project-item">
+                <div class="project-title">{{ project.name }}</div>
+                {% if project.description %}
+                  <p class="project-description">{{ project.description }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </section>
+        {% endif %}
+
+        {% if education %}
+          <section class="section" data-block="education">
+            <h2>Education</h2>
+            {% for edu in education %}
+              <div class="education-item">
+                <div class="education-degree">{{ edu.degree or edu.school }}</div>
+                <div class="education-meta">
+                  {{ edu.school }}{% if edu.period %} • {{ edu.period }}{% endif %}
+                </div>
+                {% if edu.description %}
+                  <p class="education-description">{{ edu.description }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </section>
+        {% endif %}
+
+        {% if certifications %}
+          <section class="section" data-block="certifications">
+            <h2>Certifications</h2>
+            {% for cert in certifications %}
+              <div class="cert-item">
+                <div class="cert-title">{{ cert.name }}</div>
+                <div class="cert-meta">
+                  {{ cert.issuer }}{% if cert.period %} • {{ cert.period }}{% endif %}
+                </div>
+                {% if cert.description %}
+                  <p class="cert-description">{{ cert.description }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </section>
+        {% endif %}
+      </div>
     </div>
-
-    <div class="section-title">Professional Summary</div>
-    <p>
-        Business Analyst with strong experience in requirements engineering, stakeholder communication,  
-        and enterprise workflow optimization. Skilled in Agile, system modeling, and data-driven decision making.
-    </p>
-
-    <div class="section-title">Skills</div>
-    <div>
-        <span class="skill-badge">Requirement Analysis</span>
-        <span class="skill-badge">UML</span>
-        <span class="skill-badge">SQL</span>
-        <span class="skill-badge">Jira</span>
-        <span class="skill-badge">Agile</span>
-        <span class="skill-badge">Process Mapping</span>
-    </div>
-
-    <div class="section-title">Work Experience</div>
-
-    <div class="exp-item">
-        <div class="exp-pos">Business Analyst</div>
-        <div class="exp-company">GlobalTech Solutions • 2022–Present</div>
-        <p>
-            Led requirements gathering, managed sprint planning with cross-functional teams,  
-            and supported end-to-end solution implementation.
-        </p>
-    </div>
-
-    <div class="exp-item">
-        <div class="exp-pos">Junior Business Analyst</div>
-        <div class="exp-company">BlueWave Consulting • 2020–2022</div>
-        <p>
-            Built process flow diagrams, collected functional requirements, and assisted QA team  
-            with test case validation.
-        </p>
-    </div>
-
-    <div class="section-title">Education</div>
-    <p><strong>B.S. in Information Systems</strong> — State University, 2016–2020</p>
-
-</div>
-</body>
+  </body>
 </html>

@@ -142,6 +142,7 @@ class ProfileRenderResponse(BaseModel):
     html: str
     css: str
     template_version: str
+    pdf: Optional[Dict[str, Any]] = None
 
 
 class ProfileDraftSummary(BaseModel):

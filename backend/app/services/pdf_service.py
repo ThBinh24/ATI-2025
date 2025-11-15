@@ -22,7 +22,12 @@ class PdfOptions:
             }
 
 
-def render_pdf_from_html(html: str, css: Optional[str] = None, options: Optional[PdfOptions] = None) -> bytes:
+def render_pdf_from_html(
+    html: str,
+    css: Optional[str] = None,
+    options: Optional[PdfOptions] = None,
+    page_style: Optional[str] = None,
+) -> bytes:
     """Render the provided HTML + CSS into a PDF using headless Chromium."""
 
     document = [
@@ -33,7 +38,10 @@ def render_pdf_from_html(html: str, css: Optional[str] = None, options: Optional
     ]
     if css:
         document.append("<style>" + css + "</style>")
-    document.append("<style>body{margin:0;padding:0;}@page{margin:15mm;}</style>")
+    base_style = ["body{margin:0;padding:0;}"]
+    if page_style:
+        base_style.append(page_style)
+    document.append("<style>" + "".join(base_style) + "</style>")
     document.append("</head>")
     document.append("<body>")
     document.append(html)

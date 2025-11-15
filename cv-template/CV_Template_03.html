@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ name }} - CV</title>
     <style>
+      body {
+        margin: 0;
+      }
       .cv-template-03 * {
         margin: 0;
         padding: 0;
@@ -13,25 +16,31 @@
       .cv-template-03 {
         font-family: "Inter", "Segoe UI", Arial, sans-serif;
         background: #e9ecef;
-        padding: 32px 16px;
+        padding: 0;
         color: #2c3e50;
+        min-height: 100vh;
+      }
+      .cv-template-03 body {
+        margin: 0;
       }
       .cv-template-03 .container {
-        max-width: 920px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
         background: #ffffff;
         display: flex;
         min-height: 1000px;
         box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+        overflow: hidden;
       }
       .cv-template-03 .sidebar {
-        width: 300px;
+        flex: 0 0 300px;
         background: #34495e;
         color: #ffffff;
         padding: 40px 32px;
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 0px;
       }
       .cv-template-03 .profile-img {
         width: 140px;
@@ -114,10 +123,10 @@
       }
       .cv-template-03 .main-content {
         flex: 1;
-        padding: 48px 48px 40px;
+        padding: 48px 48px 60px;
       }
       .cv-template-03 .section {
-        margin-bottom: 42px;
+        margin-bottom: 20px;
       }
       .cv-template-03 .section h2 {
         font-size: 20px;
@@ -142,8 +151,8 @@
       .cv-template-03 .project p,
       .cv-template-03 .cert-item p {
         color: #4b5563;
-        font-size: 15px;
-        line-height: 1.7;
+        font-size: 14px;
+        line-height: 1.5;
       }
       .cv-template-03 .timeline-item {
         border-left: 3px solid #00c6ff;
@@ -168,8 +177,8 @@
       }
       .cv-template-03 .timeline-item li {
         margin-bottom: 8px;
-        font-size: 15px;
-        line-height: 1.65;
+        font-size: 14px;
+        line-height: 1.5;
       }
       .cv-template-03 .education-item,
       .cv-template-03 .cert-item,
@@ -179,7 +188,7 @@
       .cv-template-03 .placeholder-text {
         font-size: 15px;
         color: #6b7280;
-        line-height: 1.7;
+        line-height: 1.5;
       }
       @media print {
         .cv-template-03 {
@@ -188,9 +197,29 @@
         }
         .cv-template-03 .container {
           box-shadow: none;
+          width: 100%;
+        }
+        .cv-template-03 .sidebar {
+          flex: 0 0 30%;
+          min-height: 100%;
+          padding: 32px 28px 40px;
+        }
+        .cv-template-03 .main-content {
+          flex: 1;
+          padding: 45px 40px 60px;
         }
         .cv-template-03 .section {
+          page-break-inside: auto;
+          break-inside: auto;
+          padding-bottom: 12px;
+        }
+        .cv-template-03 .timeline,
+        .cv-template-03 .timeline-item,
+        .cv-template-03 .project,
+        .cv-template-03 .education-item,
+        .cv-template-03 .cert-item {
           page-break-inside: avoid;
+          break-inside: avoid;
         }
       }
     </style>

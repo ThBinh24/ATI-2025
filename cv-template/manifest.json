@@ -43,10 +43,30 @@
           "required": true,
           "item_label": "Role",
           "fields": [
-            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
-            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
-            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
           ]
         },
         {
@@ -58,8 +78,18 @@
           "max": 4,
           "item_label": "Project",
           "fields": [
-            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
-            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
           ]
         },
         {
@@ -79,9 +109,24 @@
           "max": 4,
           "item_label": "Education Entry",
           "fields": [
-            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
-            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            }
           ]
         },
         {
@@ -95,9 +140,24 @@
           "removable": true,
           "item_label": "Certification",
           "fields": [
-            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
-            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
           ]
         }
       ]
@@ -111,6 +171,15 @@
     "description": "Bold two-column resume with dark sidebar and timeline experience.",
     "html": "CV_Template_03.html",
     "css": [],
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "0mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm;}@page{margin:12mm 0mm 12mm 0mm;}"
+    },
     "contract": {
       "schema_version": "2.0.0",
       "default_order": [
@@ -147,10 +216,30 @@
           "required": true,
           "item_label": "Role",
           "fields": [
-            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
-            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
-            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
           ]
         },
         {
@@ -162,8 +251,18 @@
           "max": 4,
           "item_label": "Project",
           "fields": [
-            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
-            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
           ]
         },
         {
@@ -183,10 +282,30 @@
           "max": 4,
           "item_label": "Education Entry",
           "fields": [
-            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
-            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
-            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 400 }
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 400
+            }
           ]
         },
         {
@@ -200,9 +319,24 @@
           "removable": true,
           "item_label": "Certification",
           "fields": [
-            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
-            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
           ]
         }
       ]
@@ -252,10 +386,30 @@
           "required": true,
           "item_label": "Role",
           "fields": [
-            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
-            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
-            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
           ]
         },
         {
@@ -267,8 +421,18 @@
           "max": 4,
           "item_label": "Project",
           "fields": [
-            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
-            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
           ]
         },
         {
@@ -288,9 +452,24 @@
           "max": 4,
           "item_label": "Education Entry",
           "fields": [
-            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
-            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            }
           ]
         },
         {
@@ -304,9 +483,24 @@
           "removable": true,
           "item_label": "Certification",
           "fields": [
-            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
-            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
           ]
         }
       ]
@@ -319,6 +513,179 @@
     "style": "gradient-sidebar",
     "description": "Bold resume with gradient sidebar inspired by Fusion Pro layout.",
     "html": "CV_Template_04.html",
+    "css": [],
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "0mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm;}@page{margin:12mm 0mm 12mm 0mm;}"
+    },
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 12,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "side",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "corporate-clean",
+    "name": "Corporate Clean",
+    "version": "2.0.0",
+    "style": "single-column",
+    "description": "Polished single-column resume with gradient header and card-style sections.",
+    "html": "CV_Template_05.html",
     "css": [],
     "contract": {
       "schema_version": "2.0.0",
@@ -356,10 +723,30 @@
           "required": true,
           "item_label": "Role",
           "fields": [
-            { "id": "title", "label": "Title", "type": "text", "maxLength": 120 },
-            { "id": "company", "label": "Company", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 },
-            { "id": "achievements", "label": "Achievements", "type": "textarea", "maxLength": 1500 }
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
           ]
         },
         {
@@ -371,8 +758,18 @@
           "max": 4,
           "item_label": "Project",
           "fields": [
-            { "id": "name", "label": "Name", "type": "text", "maxLength": 120 },
-            { "id": "description", "label": "Description", "type": "textarea", "maxLength": 600 }
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
           ]
         },
         {
@@ -380,37 +777,619 @@
           "label": "Skills",
           "type": "chip-list",
           "placement": "side",
-          "max": 12,
+          "max": 18,
           "removable": false
         },
         {
           "id": "education",
           "label": "Education",
           "type": "repeatable",
-          "placement": "side",
+          "placement": "main",
           "min": 0,
           "max": 4,
           "item_label": "Education Entry",
           "fields": [
-            { "id": "school", "label": "School / Institution", "type": "text", "maxLength": 160 },
-            { "id": "degree", "label": "Degree / Program", "type": "text", "maxLength": 160 },
-            { "id": "period", "label": "Period", "type": "text", "maxLength": 120 }
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 400
+            }
           ]
         },
         {
           "id": "certifications",
           "label": "Certifications",
           "type": "repeatable",
-          "placement": "side",
+          "placement": "main",
           "min": 0,
           "max": 6,
           "optional": true,
           "removable": true,
           "item_label": "Certification",
           "fields": [
-            { "id": "name", "label": "Certification", "type": "text", "maxLength": 160 },
-            { "id": "issuer", "label": "Issuer", "type": "text", "maxLength": 120 },
-            { "id": "period", "label": "Year / Period", "type": "text", "maxLength": 80 }
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
+          ]
+        }
+      ]
+    },
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "10mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm 0mm 10mm 0mm;}@page{margin:12mm 0mm 10mm 0mm;}"
+    }
+  },
+  {
+    "id": "modern-sidebar",
+    "name": "Modern Sidebar",
+    "version": "2.0.0",
+    "style": "two-column",
+    "description": "Bold sidebar resume with progress-style skills and clean content area.",
+    "html": "CV_Template_06.html",
+    "css": [],
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "10mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm 0mm 10mm 0mm;}@page{margin:12mm 0mm 10mm 0mm;}"
+    },
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "side",
+          "max": 18,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 400
+            }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "executive-premium",
+    "name": "Executive Premium",
+    "version": "2.0.0",
+    "style": "single-column",
+    "description": "Luxurious single-column resume with serif typography and gold accents.",
+    "html": "CV_Template_07.html",
+    "css": [],
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "10mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm 0mm 10mm 0mm;}@page{margin:12mm 0mm 10mm 0mm;}"
+    },
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "experiences",
+        "projects",
+        "skills",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "main",
+          "max": 20,
+          "removable": false
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 400
+            }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "corporate-blue",
+    "name": "Corporate Blue",
+    "version": "2.0.0",
+    "style": "single-column",
+    "description": "Bright single-column resume with blue accents and skill badges.",
+    "html": "CV_Template_08.html",
+    "css": [],
+    "pdf": {
+      "margin": {
+        "top": "0mm",
+        "bottom": "10mm",
+        "left": "0mm",
+        "right": "0mm"
+      },
+      "page_style": "@page:first{margin:0mm 0mm 10mm 0mm;}@page{margin:12mm 0mm 10mm 0mm;}"
+    },
+    "contract": {
+      "schema_version": "2.0.0",
+      "default_order": [
+        "summary",
+        "skills",
+        "experiences",
+        "projects",
+        "education",
+        "certifications"
+      ],
+      "blocks": [
+        {
+          "id": "summary",
+          "label": "Summary",
+          "type": "single",
+          "placement": "full",
+          "required": true,
+          "fields": [
+            {
+              "id": "summary",
+              "label": "Summary",
+              "type": "textarea",
+              "maxLength": 1200
+            }
+          ]
+        },
+        {
+          "id": "skills",
+          "label": "Skills",
+          "type": "chip-list",
+          "placement": "main",
+          "max": 20,
+          "removable": false
+        },
+        {
+          "id": "experiences",
+          "label": "Experience",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 1,
+          "max": 6,
+          "required": true,
+          "item_label": "Role",
+          "fields": [
+            {
+              "id": "title",
+              "label": "Title",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "company",
+              "label": "Company",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "achievements",
+              "label": "Achievements",
+              "type": "textarea",
+              "maxLength": 1500
+            }
+          ]
+        },
+        {
+          "id": "projects",
+          "label": "Projects",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Project",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Name",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 600
+            }
+          ]
+        },
+        {
+          "id": "education",
+          "label": "Education",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 4,
+          "item_label": "Education Entry",
+          "fields": [
+            {
+              "id": "school",
+              "label": "School / Institution",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "degree",
+              "label": "Degree / Program",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "period",
+              "label": "Period",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "description",
+              "label": "Description",
+              "type": "textarea",
+              "maxLength": 400
+            }
+          ]
+        },
+        {
+          "id": "certifications",
+          "label": "Certifications",
+          "type": "repeatable",
+          "placement": "main",
+          "min": 0,
+          "max": 6,
+          "optional": true,
+          "removable": true,
+          "item_label": "Certification",
+          "fields": [
+            {
+              "id": "name",
+              "label": "Certification",
+              "type": "text",
+              "maxLength": 160
+            },
+            {
+              "id": "issuer",
+              "label": "Issuer",
+              "type": "text",
+              "maxLength": 120
+            },
+            {
+              "id": "period",
+              "label": "Year / Period",
+              "type": "text",
+              "maxLength": 80
+            }
           ]
         }
       ]

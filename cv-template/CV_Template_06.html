@@ -1,439 +1,354 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV - Modern Sidebar</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ name }} - Modern Sidebar</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+      body {
+        margin: 0;
+        background: #e8eaf6;
+        font-family: "Roboto", Arial, sans-serif;
+      }
+      .cv-template-06 {
+        padding: 0;
+        color: #1f2933;
+      }
+      .cv-template-06 .container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        display: flex;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18);
+        min-height: 1100px;
+      }
+      .cv-template-06 .sidebar {
+        flex: 0 0 280px;
+        background: #283593;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+      }
+      .cv-template-06 .profile-section {
+        background: #1a237e;
+        padding: 44px 28px 32px;
+        text-align: center;
+      }
+      .cv-template-06 .avatar {
+        width: 115px;
+        height: 115px;
+        border-radius: 50%;
+        margin: 0 auto 18px;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        border: 4px solid rgba(255, 255, 255, 0.35);
+        overflow: hidden;
+      }
+      .cv-template-06 .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .cv-template-06 .profile-section h1 {
+        margin: 0 0 6px;
+        font-size: 22px;
+        font-weight: 500;
+      }
+      .cv-template-06 .profile-section .title {
+        font-size: 14px;
+        opacity: 0.88;
+      }
+      .cv-template-06 .sidebar-content {
+        padding: 32px 26px 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .cv-template-06 .sidebar-section h3 {
+        margin: 0 0 12px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        opacity: 0.9;
+      }
+      .cv-template-06 .contact-item {
+        display: flex;
+        gap: 10px;
+        font-size: 12px;
+        margin-bottom: 10px;
+        opacity: 0.85;
+      }
+      .cv-template-06 .progress-item {
+        margin-bottom: 16px;
+      }
+      .cv-template-06 .progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+      .cv-template-06 .progress-bar {
+        height: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .cv-template-06 .progress-fill {
+        height: 100%;
+        background: #5c6bc0;
+        border-radius: 4px;
+        width: calc(var(--skill-level, 70) * 1%);
+      }
+      .cv-template-06 .main-content {
+        flex: 1;
+        background: #ffffff;
+        padding: 48px 48px 64px;
+      }
+      .cv-template-06 .intro {
+        margin-bottom: 36px;
+        color: #374151;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .cv-template-06 .section {
+        margin-bottom: 34px;
+      }
+      .cv-template-06 .section h2 {
+        margin: 0 0 18px;
+        font-size: 19px;
+        color: #283593;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        border-bottom: 2px solid #c5cae9;
+        padding-bottom: 8px;
+      }
+      .cv-template-06 .job-item,
+      .cv-template-06 .project-item,
+      .cv-template-06 .education-item,
+      .cv-template-06 .cert-item {
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .cv-template-06 .job-item:last-child,
+      .cv-template-06 .project-item:last-child,
+      .cv-template-06 .education-item:last-child,
+      .cv-template-06 .cert-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      .cv-template-06 .job-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+        color: #6b7280;
+        margin-bottom: 6px;
+      }
+      .cv-template-06 .job-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      .cv-template-06 .job-description {
+        margin: 0;
+        color: #4b5563;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .cv-template-06 .job-item ul {
+        margin: 8px 0 0 18px;
+        padding: 0;
+        color: #4b5563;
+        font-size: 13px;
+      }
+      .cv-template-06 .job-item li {
+        margin-bottom: 6px;
+      }
+      .cv-template-06 .chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .cv-template-06 .chip {
+        border: 1px solid #d1d5db;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: #374151;
+      }
+      @media print {
         body {
-            font-family: 'Roboto', 'Arial', sans-serif;
-            background: #e8eaf6;
-            padding: 30px 15px;
+          background: #ffffff;
         }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            display: flex;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        .cv-template-06 {
+          padding: 0;
         }
-        
-        .sidebar {
-            width: 280px;
-            background: #283593;
-            color: white;
-            padding: 0;
+        .cv-template-06 .container {
+          box-shadow: none;
         }
-        
-        .profile-section {
-            background: #1a237e;
-            padding: 40px 25px;
-            text-align: center;
+        .cv-template-06 .sidebar {
+          min-height: 100%;
         }
-        
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: #5c6bc0;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 50px;
-            border: 4px solid rgba(255,255,255,0.3);
+        .cv-template-06 .main-content {
+          padding: 40px 44px 64px;
         }
-        
-        .profile-section h1 {
-            font-size: 22px;
-            margin-bottom: 8px;
-            font-weight: 500;
+        .cv-template-06 .section {
+          margin-bottom: 30px;
+          page-break-inside: auto;
+          break-inside: auto;
         }
-        
-        .profile-section .title {
-            font-size: 14px;
-            opacity: 0.9;
-            font-weight: 300;
+        .cv-template-06 .job-item,
+        .cv-template-06 .project-item,
+        .cv-template-06 .education-item,
+        .cv-template-06 .cert-item {
+          page-break-inside: avoid;
+          break-inside: avoid;
         }
-        
-        .sidebar-content {
-            padding: 30px 25px;
-        }
-        
-        .sidebar-section {
-            margin-bottom: 30px;
-        }
-        
-        .sidebar-section h3 {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 15px;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-            font-size: 13px;
-            opacity: 0.85;
-        }
-        
-        .contact-icon {
-            width: 20px;
-            text-align: center;
-        }
-        
-        .progress-item {
-            margin-bottom: 18px;
-        }
-        
-        .progress-label {
-            font-size: 13px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .progress-bar {
-            height: 5px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: #7986cb;
-            border-radius: 3px;
-        }
-        
-        .language-item {
-            margin-bottom: 12px;
-            font-size: 13px;
-            padding-left: 20px;
-            position: relative;
-        }
-        
-        .language-item::before {
-            content: '•';
-            position: absolute;
-            left: 5px;
-            font-size: 16px;
-        }
-        
-        .main-content {
-            flex: 1;
-            padding: 45px 40px;
-        }
-        
-        .intro {
-            margin-bottom: 35px;
-            color: #424242;
-            line-height: 1.7;
-            font-size: 14px;
-        }
-        
-        .section {
-            margin-bottom: 35px;
-        }
-        
-        .section h2 {
-            color: #283593;
-            font-size: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #7986cb;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .job-item {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .job-item:last-child {
-            border-bottom: none;
-        }
-        
-        .job-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 8px;
-        }
-        
-        .job-title {
-            color: #212121;
-            font-size: 17px;
-            font-weight: 600;
-        }
-        
-        .job-date {
-            color: #757575;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-        
-        .job-company {
-            color: #616161;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .job-description {
-            color: #616161;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        
-        .job-item ul {
-            margin-left: 20px;
-            color: #616161;
-            font-size: 13px;
-        }
-        
-        .job-item li {
-            margin-bottom: 5px;
-            line-height: 1.5;
-        }
-        
-        .education-item {
-            margin-bottom: 20px;
-        }
-        
-        .education-title {
-            color: #212121;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .education-meta {
-            color: #757575;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-        
-        .education-description {
-            color: #616161;
-            font-size: 14px;
-            line-height: 1.5;
-        }
+      }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="profile-section">
-                <div class="avatar">👨‍💼</div>
-                <h1>HỒ VĂN E</h1>
-                <div class="title">Project Manager</div>
+  </head>
+  <body>
+    {% set contact_lines = [] %}
+    {% if contact_block %}
+      {% set contact_lines = contact_block.split('\\n') %}
+    {% endif %}
+
+    {% macro render_section(title) %}
+      <h2>{{ title }}</h2>
+    {% endmacro %}
+
+    <div class="cv-template-06">
+      <div class="container">
+        <aside class="sidebar">
+          <div class="profile-section">
+            <div class="avatar">
+              {% if photo_data_url %}
+                <img src="{{ photo_data_url }}" alt="{{ name or 'Profile photo' }}" />
+              {% else %}
+                <span>👤</span>
+              {% endif %}
             </div>
-            
-            <div class="sidebar-content">
-                <div class="sidebar-section">
-                    <h3>Liên hệ</h3>
+            <h1>{{ name or "Your Name" }}</h1>
+            {% if headline %}
+              <div class="title">{{ headline }}</div>
+            {% endif %}
+          </div>
+          <div class="sidebar-content">
+            {% if contact_lines %}
+              <div class="sidebar-section">
+                <h3>Contact</h3>
+                {% for line in contact_lines %}
+                  {% if line.strip() %}
                     <div class="contact-item">
-                        <span class="contact-icon">📧</span>
-                        <span>hovane@email.com</span>
+                      <span>{{ line.strip() }}</span>
                     </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">📱</span>
-                        <span>0938 765 432</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if skills %}
+              <div class="sidebar-section" data-block="skills">
+                <h3>Skills</h3>
+                {% for skill in skills %}
+                  {% set skill_name = skill.name if skill is mapping else skill %}
+                  {% set skill_level = skill.level if skill is mapping else 80 %}
+                  <div class="progress-item">
+                    <div class="progress-label">
+                      <span>{{ skill_name }}</span>
+                      <span>{{ skill_level }}%</span>
                     </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">🌐</span>
-                        <span>linkedin.com/in/hovane</span>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="--skill-level: {{ skill_level }};"></div>
                     </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">📍</span>
-                        <span>TP. Hồ Chí Minh</span>
-                    </div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>Kỹ năng</h3>
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>Project Management</span>
-                            <span>90%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 90%"></div>
-                        </div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>Agile/Scrum</span>
-                            <span>95%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 95%"></div>
-                        </div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>Team Leadership</span>
-                            <span>85%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 85%"></div>
-                        </div>
-                    </div>
-                    <div class="progress-item">
-                        <div class="progress-label">
-                            <span>Risk Management</span>
-                            <span>80%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 80%"></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>Công cụ</h3>
-                    <div class="language-item">Jira / Confluence</div>
-                    <div class="language-item">MS Project</div>
-                    <div class="language-item">Trello / Asana</div>
-                    <div class="language-item">Slack / Teams</div>
-                    <div class="language-item">Google Workspace</div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>Ngôn ngữ</h3>
-                    <div class="language-item">Tiếng Việt - Bản ngữ</div>
-                    <div class="language-item">Tiếng Anh - TOEIC 850</div>
-                    <div class="language-item">Tiếng Trung - HSK 4</div>
-                </div>
-                
-                <div class="sidebar-section">
-                    <h3>Chứng chỉ</h3>
-                    <div class="language-item">PMP Certified</div>
-                    <div class="language-item">Scrum Master (PSM I)</div>
-                    <div class="language-item">PRINCE2 Foundation</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="main-content">
-            <div class="intro">
-                <strong>Project Manager</strong> với hơn 7 năm kinh nghiệm quản lý các dự án 
-                công nghệ từ nhỏ đến lớn. Chuyên về Agile/Scrum methodology, có khả năng lãnh 
-                đạo cross-functional teams và đảm bảo dự án hoàn thành đúng timeline, budget. 
-                Thành công deliver 30+ projects với tổng giá trị hơn 50 tỷ đồng.
-            </div>
-            
-            <div class="section">
-                <h2>Kinh nghiệm làm việc</h2>
-                
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if education %}
+              <div class="sidebar-section" data-block="education">
+                <h3>Education</h3>
+                {% for edu in education %}
+                  <div class="language-item">
+                    <strong style="font-size:12px; line-height:1;">{{ edu.degree or edu.school }}</strong><br />
+                    <span style="font-size:12px; line-height:1;">{{ edu.school }}</span>{% if edu.period %}<br /><span style="font-size:12px; line-height:1;">{{ edu.period }}</span>{% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </aside>
+        <main class="main-content">
+          {% if summary %}
+            <section class="section" data-block="summary">
+              {{ render_section("Summary") }}
+              <p class="intro">{{ summary }}</p>
+            </section>
+          {% endif %}
+
+          {% if experiences %}
+            <section class="section" data-block="experiences">
+              {{ render_section("Experience") }}
+              {% for exp in experiences %}
                 <div class="job-item">
-                    <div class="job-header">
-                        <div class="job-title">Senior Project Manager</div>
-                        <div class="job-date">01/2021 - Hiện tại</div>
-                    </div>
-                    <div class="job-company">Tech Solutions JSC</div>
-                    <div class="job-description">
-                        Quản lý portfolio gồm 8 dự án song song, tổng ngân sách 30 tỷ đồng/năm
-                    </div>
+                  <div class="job-header">
+                    <span class="job-title">{{ exp.title }}</span>
+                    <span class="job-date">{{ exp.period }}</span>
+                  </div>
+                  <div class="job-company">{{ exp.company }}</div>
+                  {% if exp.achievements %}
                     <ul>
-                        <li>Lead team 50+ members (developers, designers, QA, BA)</li>
-                        <li>Triển khai Agile transformation cho toàn bộ organization</li>
-                        <li>Tăng on-time delivery rate từ 65% lên 92%</li>
-                        <li>Giảm project costs 20% thông qua process optimization</li>
-                        <li>Stakeholder management với C-level executives và clients</li>
+                      {% for achievement in exp.achievements %}
+                        <li>{{ achievement }}</li>
+                      {% endfor %}
                     </ul>
+                  {% elif exp.description %}
+                    <p class="job-description">{{ exp.description }}</p>
+                  {% endif %}
                 </div>
-                
-                <div class="job-item">
-                    <div class="job-header">
-                        <div class="job-title">Project Manager</div>
-                        <div class="job-date">06/2018 - 12/2020</div>
-                    </div>
-                    <div class="job-company">Digital Agency Vietnam</div>
-                    <div class="job-description">
-                        Quản lý 3-5 dự án đồng thời cho các khách hàng enterprise
-                    </div>
-                    <ul>
-                        <li>Deliver 15+ web/mobile projects thành công</li>
-                        <li>Coordination giữa technical team và business stakeholders</li>
-                        <li>Budget planning và resource allocation</li>
-                        <li>Risk assessment và mitigation strategies</li>
-                    </ul>
+              {% endfor %}
+            </section>
+          {% endif %}
+
+          {% if projects %}
+            <section class="section" data-block="projects">
+              {{ render_section("Projects") }}
+              {% for project in projects %}
+                <div class="project-item">
+                  <div class="job-title">{{ project.name }}</div>
+                  {% if project.description %}
+                    <p class="job-description">{{ project.description }}</p>
+                  {% endif %}
                 </div>
-                
-                <div class="job-item">
-                    <div class="job-header">
-                        <div class="job-title">Assistant Project Manager</div>
-                        <div class="job-date">03/2017 - 05/2018</div>
-                    </div>
-                    <div class="job-company">Software Company ABC</div>
-                    <ul>
-                        <li>Hỗ trợ PM trong planning và execution</li>
-                        <li>Project documentation và reporting</li>
-                        <li>Sprint planning và daily standup facilitation</li>
-                        <li>Tracking progress và updating stakeholders</li>
-                    </ul>
+              {% endfor %}
+            </section>
+          {% endif %}
+
+          {% if certifications %}
+            <section class="section" data-block="certifications">
+              {{ render_section("Certifications") }}
+              {% for cert in certifications %}
+                <div class="cert-item">
+                  <div class="job-title">{{ cert.name }}</div>
+                  <div class="job-header">
+                    <span>{{ cert.issuer }}</span>
+                    <span>{{ cert.period }}</span>
+                  </div>
+                  {% if cert.description %}
+                    <p class="job-description">{{ cert.description }}</p>
+                  {% endif %}
                 </div>
-            </div>
-            
-            <div class="section">
-                <h2>Học vấn</h2>
-                
-                <div class="education-item">
-                    <div class="education-title">Thạc sĩ Quản trị Dự án</div>
-                    <div class="education-meta">Đại học Kinh tế TP.HCM | 2019 - 2021</div>
-                    <div class="education-description">
-                        Chuyên sâu về Project Management, Agile Methodologies
-                    </div>
-                </div>
-                
-                <div class="education-item">
-                    <div class="education-title">Cử nhân Công nghệ Thông tin</div>
-                    <div class="education-meta">Đại học Khoa học Tự nhiên | 2013 - 2017</div>
-                    <div class="education-description">
-                        GPA: 3.5/4.0 - Chuyên ngành: Hệ thống thông tin
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>Dự án tiêu biểu</h2>
-                
-                <div class="job-item">
-                    <div class="job-title">E-commerce Platform Transformation</div>
-                    <div class="job-company">Enterprise Client | Budget: 12 tỷ VNĐ</div>
-                    <div class="job-description">
-                        Nâng cấp toàn bộ hệ thống e-commerce, migrate 2M users, 
-                        tích hợp 10+ payment gateways. Hoàn thành trước deadline 2 tuần.
-                    </div>
-                </div>
-                
-                <div class="job-item">
-                    <div class="job-title">Mobile Banking App</div>
-                    <div class="job-company">Bank XYZ | Budget: 8 tỷ VNĐ</div>
-                    <div class="job-description">
-                        Phát triển app banking iOS/Android phục vụ 500K+ users, 
-                        đạt 4.5★ rating sau 3 tháng launch.
-                    </div>
-                </div>
-            </div>
-        </div>
+              {% endfor %}
+            </section>
+          {% endif %}
+        </main>
+      </div>
     </div>
-</body>
+  </body>
 </html>

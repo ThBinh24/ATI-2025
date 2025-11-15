@@ -107,7 +107,7 @@
     }
     .cv-template-04 .content-main {
       flex: 1;
-      padding: 32px;
+      padding: 32px 32px 56px;
     }
     .cv-template-04 .section {
       margin-bottom: 26px;
@@ -150,7 +150,7 @@
       font-size: 13px;
     }
     .cv-template-04 .main-section {
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
     .cv-template-04 .main-title {
       font-size: 20px;
@@ -286,6 +286,21 @@
       }
       .cv-template-04 .container {
         box-shadow: none;
+      }
+      .cv-template-04 .content-main {
+        padding: 40px 32px 56px;
+      }
+      .cv-template-04 .main-section {
+        page-break-inside: auto;
+        break-inside: auto;
+        padding-bottom: 8px;
+      }
+      .cv-template-04 .timeline-item,
+      .cv-template-04 .education-item,
+      .cv-template-04 .cert-item,
+      .cv-template-04 .project {
+        page-break-inside: avoid;
+        break-inside: avoid;
       }
     }
   </style>

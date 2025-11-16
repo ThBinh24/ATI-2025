@@ -1,19 +1,47 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getProfileInfo, subscribeProfileInfo } from "../lib/profileStore";
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [storedProfile, setStoredProfile] = useState(getProfileInfo());
 
   const rawName = user?.name || "Unnamed";
   const cleanedName = rawName.replace(/\s*\((student|employer|admin)\)$/i, "");
   const roleLabel = user?.role ? user.role.toUpperCase() : "";
+  const initials = useMemo(() => {
+    const target = storedProfile.name || cleanedName || "U";
+    return target
+      .split(" ")
+      .map((part) => part[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  }, [storedProfile.name, cleanedName]);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  useEffect(() => {
+    const unsub = subscribeProfileInfo(() => setStoredProfile(getProfileInfo()));
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest("#user-menu-button") && !target.closest("#user-menu-dropdown")) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -74,17 +102,47 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </nav>
           <div className="flex items-center gap-3 text-sm text-slate-600">
             <div className="hidden text-right sm:block">
-              <div className="font-medium text-slate-800">{cleanedName}</div>
-              <div className="text-xs tracking-wide uppercase text-slate-500">
-                {roleLabel}
-              </div>
+              <div className="font-medium text-slate-800">{storedProfile.name || cleanedName}</div>
+              <div className="text-xs tracking-wide uppercase text-slate-500">{roleLabel}</div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-100"
+            <div className="relative">
+              <button
+                id="user-menu-button"
+                onClick={() => setMenuOpen((prev) => !prev)}
+                className="flex items-center justify-center w-10 h-10 text-sm font-semibold text-white bg-blue-600 rounded-full"
+                style={{
+                backgroundImage: storedProfile.avatarDataUrl ? `url(${storedProfile.avatarDataUrl})` : undefined,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
             >
-              Logout
+              {!storedProfile.avatarDataUrl && initials}
             </button>
+            {menuOpen && (
+              <div
+                id="user-menu-dropdown"
+                className="absolute right-0 z-10 w-48 mt-2 overflow-hidden bg-white border shadow-lg rounded-xl border-slate-200"
+              >
+                
+                <div className="flex flex-col text-sm">
+                  <Link
+                    to="/profile"
+                    className="px-4 py-2 text-left transition hover:bg-slate-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="px-4 py-2 text-left transition text-rose-600 hover:bg-slate-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
+            </div>
           </div>
         </div>
       </header>

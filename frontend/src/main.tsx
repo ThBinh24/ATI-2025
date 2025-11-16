@@ -14,6 +14,7 @@ import InterviewPracticePage from "./pages/InterviewPracticePage";
 import JobDescriptionGeneratorPage from "./pages/JobDescriptionGeneratorPage";
 import InterviewQuestionsPage from "./pages/InterviewQuestionsPage";
 import ProfileBuilderPage from "./pages/ProfileBuilderPage";
+import MyProfilePage from "./pages/MyProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute roles={["student", "admin", "employer"]}>
         <ProfileBuilderPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoute roles={["student", "admin", "employer"]}>
+        <MyProfilePage />
       </ProtectedRoute>
     ),
   },

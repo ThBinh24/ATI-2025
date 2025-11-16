@@ -88,8 +88,6 @@ GOOGLE_API_KEY=your_gemini_api_key
 JWT_SECRET=replace_with_random_string
 
 # Optional (recommended)
-GMAIL_USER=your_gmail_address
-GMAIL_APP_PASSWORD=your_gmail_app_password
 ACCESS_TOKEN_EXPIRE_MINUTES=60
 JD_UPLOAD_DIR=absolute_path_to_backend\uploads\jd
 CV_UPLOAD_DIR=absolute_path_to_backend\uploads\cv

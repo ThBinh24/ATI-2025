@@ -21,6 +21,8 @@ import {
   exportProfilePdf,
   updateProfileDraft,
 } from "../services/backend";
+import { addBuilderCv } from "../lib/profileStore";
+import { useAuth } from "../context/AuthContext";
 
 type DraftData = {
   name: string;
@@ -74,6 +76,8 @@ type DraftDataInput =
 const AUTOSAVE_DELAY = 1200;
 
 const ProfileBuilderPage: React.FC = () => {
+  const { user } = useAuth();
+  const allowProfileCv = user?.role === "student";
   const [templates, setTemplates] = useState<ProfileTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>("");
   const [draftSummaries, setDraftSummaries] = useState<ProfileDraftSummary[]>(
@@ -99,6 +103,7 @@ const ProfileBuilderPage: React.FC = () => {
   );
   const [error, setError] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [cvNotice, setCvNotice] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [activeEditorIndex, setActiveEditorIndex] = useState(0);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
@@ -504,7 +509,10 @@ const ProfileBuilderPage: React.FC = () => {
         const templateContract = templates.find(
           (tpl) => tpl.id === res.data.template_id
         )?.contract;
-        const alignedBlocks = reconcileBlocks(res.data.blocks, templateContract);
+        const alignedBlocks = reconcileBlocks(
+          res.data.blocks,
+          templateContract
+        );
         setBlockStates(alignedBlocks);
         setDraftData(normalizeDraftData(res.data.data, alignedBlocks));
         setActiveTab("builder");
@@ -545,9 +553,7 @@ const ProfileBuilderPage: React.FC = () => {
 
   const handleMoveBlock = useCallback((blockId: string, direction: number) => {
     setBlockStates((prev) => {
-      const next = [...prev].sort(
-        (a, b) => (a.order ?? 0) - (b.order ?? 0)
-      );
+      const next = [...prev].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       const currentIndex = next.findIndex((block) => block.id === blockId);
       const targetIndex = currentIndex + direction;
       if (currentIndex < 0 || targetIndex < 0 || targetIndex >= next.length) {
@@ -675,11 +681,6 @@ const ProfileBuilderPage: React.FC = () => {
     []
   );
 
-  const handleManualRefresh = useCallback(async () => {
-    if (!draft) return;
-    await handleSaveDraft({ silent: true });
-  }, [draft, handleSaveDraft]);
-
   const handleDownloadPdf = useCallback(async () => {
     if (!draft) return;
     try {
@@ -695,11 +696,25 @@ const ProfileBuilderPage: React.FC = () => {
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
       setError(
-        err?.response?.data?.detail ||
-          "Failed to export PDF. Please try again."
+        err?.response?.data?.detail || "Failed to export PDF. Please try again."
       );
     }
   }, [draft, selectedTemplate]);
+
+  const handleAddDraftToProfile = useCallback(() => {
+    if (!allowProfileCv) return;
+    if (!draft) {
+      setError("Generate and save a draft before adding it to My CVs.");
+      return;
+    }
+    addBuilderCv({
+      draftId: draft.id,
+      name: draftData.name || `Draft ${draft.id}`,
+      templateId: selectedTemplate,
+    });
+    setCvNotice("Added to My CVs.");
+    setTimeout(() => setCvNotice(null), 2500);
+  }, [allowProfileCv, draft, draftData.name, selectedTemplate]);
 
   const renderProfileInfoSection = () => (
     <div className="p-5 space-y-4 bg-white border shadow-sm rounded-2xl border-slate-200">
@@ -710,7 +725,9 @@ const ProfileBuilderPage: React.FC = () => {
       </div>
       <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium text-slate-700">Full name</label>
+          <label className="text-sm font-medium text-slate-700">
+            Full name
+          </label>
           <input
             className="w-full px-3 py-2 mt-1 text-sm border rounded-lg border-slate-300"
             value={draftData.name || ""}
@@ -740,7 +757,7 @@ const ProfileBuilderPage: React.FC = () => {
             Profile photo
           </label>
           <div className="flex flex-wrap items-center gap-4 mt-2">
-            <div className="w-20 h-20 rounded-full border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center">
+            <div className="flex items-center justify-center w-20 h-20 overflow-hidden border rounded-full border-slate-200 bg-slate-100">
               {draftData.photo_data_url ? (
                 <img
                   src={draftData.photo_data_url}
@@ -765,7 +782,7 @@ const ProfileBuilderPage: React.FC = () => {
               {draftData.photo_data_url && (
                 <button
                   type="button"
-                  className="text-sm text-rose-600 hover:underline self-start"
+                  className="self-start text-sm text-rose-600 hover:underline"
                   onClick={handleRemovePhoto}
                 >
                   Remove photo
@@ -936,12 +953,7 @@ const ProfileBuilderPage: React.FC = () => {
                         <label className="text-xs font-medium text-slate-600">
                           {field.label}
                         </label>
-                        {renderFieldControl(
-                          block.id,
-                          field,
-                          displayValue,
-                          idx
-                        )}
+                        {renderFieldControl(block.id, field, displayValue, idx)}
                       </div>
                     );
                   })}
@@ -1285,7 +1297,8 @@ const ProfileBuilderPage: React.FC = () => {
                       </p>
                       {summary.updated_at && (
                         <p className="text-xs text-slate-400">
-                          Updated {new Date(summary.updated_at).toLocaleString()}
+                          Updated{" "}
+                          {new Date(summary.updated_at).toLocaleString()}
                         </p>
                       )}
                     </div>
@@ -1321,7 +1334,9 @@ const ProfileBuilderPage: React.FC = () => {
                 <div>
                   <p className="text-xs font-medium text-slate-500">
                     {editorSections.length > 0
-                      ? `Section ${activeEditorIndex + 1} of ${editorSections.length}`
+                      ? `Section ${activeEditorIndex + 1} of ${
+                          editorSections.length
+                        }`
                       : "No sections available"}
                   </p>
                   <h2 className="text-lg font-semibold text-slate-900">
@@ -1398,14 +1413,16 @@ const ProfileBuilderPage: React.FC = () => {
                   Preview
                 </h3>
                 <div className="flex gap-2">
-                  <button
-                    type="button"
-                    className="px-3 py-1.5 text-sm font-medium text-slate-700 border rounded-lg border-slate-200 hover:bg-slate-50 disabled:opacity-60"
-                    onClick={handleManualRefresh}
-                    disabled={rendering}
-                  >
-                    {rendering ? "Rendering..." : "Refresh"}
-                  </button>
+                  {allowProfileCv && (
+                    <button
+                      type="button"
+                      className="px-3 py-1.5 text-sm font-medium text-slate-700 border rounded-lg border-slate-200 hover:bg-slate-50 disabled:opacity-60"
+                      onClick={handleAddDraftToProfile}
+                      disabled={!draft}
+                    >
+                      Add to My CV
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="px-3 py-1.5 text-sm font-semibold text-white rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60"
@@ -1424,6 +1441,9 @@ const ProfileBuilderPage: React.FC = () => {
                   </button>
                 </div>
               </div>
+              {allowProfileCv && cvNotice && (
+                <p className="text-xs text-emerald-600">{cvNotice}</p>
+              )}
               <div className="p-3 overflow-auto border rounded-xl border-slate-200 bg-slate-100">
                 {preview ? (
                   <div
@@ -1436,7 +1456,7 @@ const ProfileBuilderPage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="py-12 text-sm text-center text-slate-500">
-                    Generate or refresh to see preview.
+                    Generate or save to see preview.
                   </div>
                 )}
               </div>

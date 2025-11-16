@@ -67,6 +67,23 @@ def migrate(conn: sqlite3.Connection):
         cur.execute("ALTER TABLE users ADD COLUMN banned_at TEXT")
     except sqlite3.OperationalError:
         pass
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN active_profile_draft_id INTEGER")
+    except sqlite3.OperationalError:
+        pass
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS profile_match_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        job_id INTEGER NOT NULL,
+        cv_hash TEXT NOT NULL,
+        score REAL,
+        coverage REAL,
+        similarity REAL,
+        analysis_json TEXT,
+        created_at TEXT
+    )""")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_match_history_user ON profile_match_history(user_id)")
     cur.execute("""
     CREATE TABLE IF NOT EXISTS processed (
         id INTEGER PRIMARY KEY AUTOINCREMENT,

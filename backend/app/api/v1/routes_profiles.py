@@ -64,6 +64,29 @@ def list_my_drafts(current_user: dict = Depends(get_current_user)):
     drafts = profile_service.list_drafts(current_user["id"])
     return [_draft_to_summary(row) for row in drafts]
 
+@router.get("/drafts/active", response_model=Optional[ProfileDraftSummary])
+def get_active_profile_draft(current_user: dict = Depends(get_current_user)):
+    draft = profile_service.get_active_draft(current_user["id"])
+    if not draft:
+        return None
+    return _draft_to_summary(draft)
+
+@router.post("/drafts/{draft_id}/activate", response_model=ProfileDraftSummary)
+def activate_profile_draft(
+    draft_id: int,
+    current_user: dict = Depends(get_current_user),
+):
+    draft = profile_service.set_active_draft(current_user["id"], int(draft_id))
+    if not draft:
+        raise HTTPException(status_code=404, detail="Draft not found.")
+    return _draft_to_summary(draft)
+
+
+@router.post("/drafts/active/clear")
+def clear_active_profile_draft(current_user: dict = Depends(get_current_user)):
+    profile_service.clear_active_draft(current_user["id"])
+    return {"status": "cleared"}
+
 
 @router.post("/generate", response_model=ProfileDraftOut)
 def generate_profile(

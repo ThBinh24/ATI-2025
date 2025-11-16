@@ -1,8 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   sendInterviewMessage,
   startInterviewSession,
+  listMyApplications,
 } from "../services/backend";
+import { useAuth } from "../context/AuthContext";
+import RichTextEditor from "../components/text-editor";
+import { htmlToPlainText, sanitizeHtml } from "../lib/sanitize";
 
 type ChatMessage =
   | { type: "question"; text: string }
@@ -20,17 +24,30 @@ const DOMAINS = [
 ];
 
 const InterviewPracticePage: React.FC = () => {
+  const { user } = useAuth();
   const [domain, setDomain] = useState("behavioral");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [answer, setAnswer] = useState("");
-  const [jdText, setJdText] = useState("");
+  const [jdContent, setJdContent] = useState("");
   const [jdFile, setJdFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [appliedJobs, setAppliedJobs] = useState<any[]>([]);
+  const [loadingAppliedJobs, setLoadingAppliedJobs] = useState(false);
+  const [selectedAppliedJob, setSelectedAppliedJob] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (user?.role !== "student") return;
+    setLoadingAppliedJobs(true);
+    listMyApplications()
+      .then((res) => setAppliedJobs(res.data || []))
+      .catch(() => setAppliedJobs([]))
+      .finally(() => setLoadingAppliedJobs(false));
+  }, [user?.role]);
 
   const handleJdFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -45,9 +62,10 @@ const InterviewPracticePage: React.FC = () => {
   };
 
   const startSession = async () => {
-    if (!jdText.trim() && !jdFile) {
+    const plainJd = htmlToPlainText(jdContent);
+    if (!plainJd.trim() && !jdFile && !selectedAppliedJob) {
       setError(
-        "Paste the job description or upload a JD file so we can tailor the questions."
+        "Paste the job description, upload a JD, or select one of your applied jobs."
       );
       return;
     }
@@ -56,8 +74,9 @@ const InterviewPracticePage: React.FC = () => {
     try {
       const res = await startInterviewSession({
         domain,
-        jd_text: jdText,
+        jd_text: plainJd,
         jd_file: jdFile ?? undefined,
+        job_id: selectedAppliedJob ? Number(selectedAppliedJob) : undefined,
       });
       const data = res.data;
       setSessionId(data.session_id);
@@ -180,19 +199,82 @@ const InterviewPracticePage: React.FC = () => {
         >
           Job description
         </label>
-        <textarea
-          id="jd-text"
-          className="w-full h-40 px-3 py-2 text-sm border rounded-lg border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+        <RichTextEditor
+          content={jdContent}
+          onChange={setJdContent}
           placeholder="Paste the job description here (responsibilities, required skills, etc.)."
-          value={jdText}
-          onChange={(e) => setJdText(e.target.value)}
-          disabled={loading}
         />
         <p className="text-xs text-slate-500">
           Paste the job description or upload a PDF/DOCX file. We&rsquo;ll use
           it to tailor five interview questions around the key responsibilities
           and skills.
         </p>
+        {user?.role === "student" && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">
+              Or select a job you already applied to
+            </label>
+            <div className="flex flex-wrap items-center gap-3">
+              <select
+                className="w-full max-w-md px-3 py-2 text-sm border rounded-lg border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                value={selectedAppliedJob}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedAppliedJob(value);
+                  if (!value) {
+                    return;
+                  }
+                  const job = appliedJobs.find(
+                    (item) => String(item.id) === value
+                  );
+                  const jdString = sanitizeHtml(
+                    job?.job_jd_text || job?.jd_text || ""
+                  );
+                  const htmlValue = jdString
+                    ? jdString
+                        .split("\n")
+                        .filter((line) => line.trim().length > 0)
+                        .map((line) => `<p>${line}</p>`)
+                        .join("")
+                    : "";
+                  setJdContent(htmlValue);
+                }}
+                disabled={loadingAppliedJobs}
+              >
+                <option value="">
+                  {loadingAppliedJobs
+                    ? "Loading applied jobs..."
+                    : "Select a job"}
+                </option>
+                {appliedJobs.map((job) => (
+                  <option key={job.id} value={job.id}>
+                    {job.job_title_full || job.job_title || `Job #${job.id}`}
+                  </option>
+                ))}
+              </select>
+              {selectedAppliedJob && (
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <button
+                    type="button"
+                    className="font-medium text-slate-600 hover:text-slate-800"
+                    onClick={() => {
+                      setSelectedAppliedJob("");
+                      setJdContent("");
+                    }}
+                    disabled={loading}
+                  >
+                    Clear selection
+                  </button>
+                  {selectedAppliedJob && !htmlToPlainText(jdContent).trim() && (
+                    <span className="text-amber-600">
+                      JD text missing for this job, but we'll fetch it automatically.
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         <div className="flex items-center justify-between gap-3 pt-2">
           <div className="flex flex-col gap-1">
             <label

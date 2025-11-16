@@ -197,3 +197,86 @@ def render_draft(draft: Dict[str, Any], template_id: Optional[str] = None) -> Di
     blocks = _load_blocks_for_draft({**draft, "template_id": selected_template})
     context = {**data, "blocks": blocks}
     return profile_templates.render_template(selected_template, context)
+
+
+def set_active_draft(user_id: int, draft_id: int) -> Optional[Dict[str, Any]]:
+    draft = get_draft(draft_id, user_id)
+    if not draft:
+        return None
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET active_profile_draft_id=? WHERE id=?",
+        (draft_id, user_id),
+    )
+    conn.commit()
+    return draft
+
+
+def clear_active_draft(user_id: int):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET active_profile_draft_id=NULL WHERE id=?",
+        (user_id,),
+    )
+    conn.commit()
+
+
+def get_active_draft(user_id: int) -> Optional[Dict[str, Any]]:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT active_profile_draft_id FROM users WHERE id=?",
+        (user_id,),
+    )
+    row = cur.fetchone()
+    draft_id = row["active_profile_draft_id"] if row else None
+    if not draft_id:
+        return None
+    return get_draft(int(draft_id), user_id)
+
+
+def draft_to_plaintext(draft: Dict[str, Any]) -> str:
+    data = json.loads(draft.get("data_json") or "{}")
+    parts: List[str] = []
+    for key in ("name", "headline", "contact_block", "summary"):
+        value = (data.get(key) or "").strip()
+        if value:
+            parts.append(value)
+    for section in data.get("experiences") or []:
+        title = section.get("title") or ""
+        company = section.get("company") or ""
+        period = section.get("period") or ""
+        header = " - ".join([part for part in [title, company, period] if part])
+        if header:
+            parts.append(header)
+        for bullet in section.get("achievements") or []:
+            bullet = (bullet or "").strip()
+            if bullet:
+                parts.append(f"* {bullet}")
+    for project in data.get("projects") or []:
+        line = f"Project: {project.get('name','')} - {project.get('description','')}"
+        parts.append(line.strip())
+    for edu in data.get("education") or []:
+        line = "Education: " + " - ".join(
+            [part for part in [edu.get("school"), edu.get("degree"), edu.get("period")] if part]
+        )
+        parts.append(line.strip())
+    for cert in data.get("certifications") or []:
+        line = "Certification: " + " - ".join(
+            [part for part in [cert.get("name"), cert.get("issuer"), cert.get("period")] if part]
+        )
+        parts.append(line.strip())
+    skills = data.get("skills")
+    if isinstance(skills, list):
+        normalized = []
+        for skill in skills:
+            if isinstance(skill, dict):
+                normalized.append(skill.get("name") or "")
+            else:
+                normalized.append(str(skill))
+        normalized = [s.strip() for s in normalized if s and s.strip()]
+        if normalized:
+            parts.append("Skills: " + ", ".join(normalized))
+    return "\n".join([p for p in parts if p])

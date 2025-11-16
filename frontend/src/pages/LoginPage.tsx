@@ -101,7 +101,7 @@ const LoginPage: React.FC = () => {
             className="font-semibold text-blue-600 hover:underline"
             to="/register"
           >
-            Register
+            Register here
           </Link>
         </p>
       </div>

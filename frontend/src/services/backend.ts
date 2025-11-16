@@ -137,8 +137,9 @@ export const generateJobInterviewQuestions = (
 
 export interface InterviewStartPayload {
   domain: string;
-  jd_text: string;
+  jd_text?: string;
   jd_file?: File | null;
+  job_id?: number;
 }
 
 export const startInterviewSession = (payload: InterviewStartPayload) => {
@@ -149,6 +150,9 @@ export const startInterviewSession = (payload: InterviewStartPayload) => {
     if (payload.jd_text?.trim()) {
       form.append("jd_text", payload.jd_text);
     }
+    if (typeof payload.job_id === "number") {
+      form.append("job_id", String(payload.job_id));
+    }
     return api.post("/interview/session", form, {
       headers: { "Content-Type": "multipart/form-data" },
     });
@@ -156,6 +160,7 @@ export const startInterviewSession = (payload: InterviewStartPayload) => {
   return api.post("/interview/session", {
     domain: payload.domain,
     jd_text: payload.jd_text,
+    job_id: payload.job_id,
   });
 };
 export const sendInterviewMessage = (
@@ -295,3 +300,49 @@ export const listProfileDraftsForUser = () =>
 
 export const deleteProfileDraft = (draftId: number) =>
   api.delete(`/profiles/${draftId}`);
+
+export const activateProfileDraft = (draftId: number) =>
+  api.post<ProfileDraftSummary>(`/profiles/drafts/${draftId}/activate`, {});
+
+export const getActiveProfileDraft = () =>
+  api.get<ProfileDraftSummary | null>("/profiles/drafts/active");
+
+export const clearActiveProfileDraft = () =>
+  api.post("/profiles/drafts/active/clear", {});
+
+export interface JobMatchDetails {
+  cv_skills: string[];
+  jd_skills: string[];
+  matched: string[];
+  missing: string[];
+  coverage: number;
+  similarity: number;
+  passed: boolean;
+  predicted_role: string;
+  quality_warnings: any[];
+  course_suggestions: any[];
+  score: number;
+}
+
+export interface JobWithMatch extends Record<string, any> {
+  match: JobMatchDetails;
+}
+
+export const listJobsMatchedToProfile = (limit?: number) =>
+  api.get<JobWithMatch[]>("/jobs/profile-match", {
+    params: typeof limit === "number" ? { limit } : undefined,
+  });
+
+export interface JobMatchHistoryEntry {
+  job: Record<string, any>;
+  match: JobMatchDetails;
+  matched_at: string;
+}
+
+export const listProfileMatchHistory = (limit?: number) =>
+  api.get<JobMatchHistoryEntry[]>("/jobs/profile-match/history", {
+    params: typeof limit === "number" ? { limit } : undefined,
+  });
+
+export const clearProfileMatchHistory = () =>
+  api.delete("/jobs/profile-match/history");

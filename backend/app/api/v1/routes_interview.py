@@ -24,6 +24,7 @@ from app.services.gemini_service import (
     generate_interview_questions_from_gemini,
     summarize_jd_for_prompt,
 )
+from app.dao.jobs_dao import get_job_by_id
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
@@ -51,6 +52,7 @@ class InterviewStartRequest(BaseModel):
         description="Job description text pasted by the student.",
         min_length=0,
     )
+    job_id: int | None = Field(default=None, description="Existing job ID to load JD text")
 
 
 class InterviewStartResponse(BaseModel):
@@ -175,6 +177,7 @@ async def start_session(
     request: Request,
     domain: str | None = Form(default=None),
     jd_text: str = Form(default=""),
+    job_id: int | None = Form(default=None),
     jd_file: UploadFile | None = File(default=None),
     current_user: dict = Depends(require_roles("student", "admin")),
 ):
@@ -187,12 +190,19 @@ async def start_session(
             parsed_payload = InterviewStartRequest()
         domain = parsed_payload.domain
         jd_text = parsed_payload.jd_text
+        job_id = parsed_payload.job_id
 
     domain = (domain or "behavioral").lower()
     if domain not in QUESTION_BANK:
         raise HTTPException(status_code=400, detail="Unsupported interview domain.")
 
     combined_jd_text = jd_text or ""
+    if (not combined_jd_text.strip()) and job_id:
+        job = get_job_by_id(int(job_id))
+        if job and job.get("jd_text"):
+            combined_jd_text = job["jd_text"] or ""
+        else:
+            raise HTTPException(status_code=404, detail="Selected job description is not available.")
     if jd_file is not None:
         try:
             file_bytes = await jd_file.read()

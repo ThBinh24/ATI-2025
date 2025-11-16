@@ -187,6 +187,7 @@ const ProfileBuilderPage: React.FC = () => {
     }, {});
   }, []);
 
+
   const normalizeSkillsArray = (value: any): SkillEntry[] => {
     if (!Array.isArray(value)) {
       return [];

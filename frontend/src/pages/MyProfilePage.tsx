@@ -9,7 +9,12 @@ import {
   saveProfileInfo,
   subscribeCvChanges,
 } from "../lib/profileStore";
-import { exportProfilePdf } from "../services/backend";
+import {
+  exportProfilePdf,
+  activateProfileDraft,
+  getActiveProfileDraft,
+  clearActiveProfileDraft,
+} from "../services/backend";
 import { useAuth } from "../context/AuthContext";
 
 const emptyInfo: ProfileInfo = {
@@ -33,6 +38,9 @@ const MyProfilePage: React.FC = () => {
   const [cvEntries, setCvEntries] = useState<StoredCvEntry[]>(() => listProfileCvs());
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [cvStatusMessage, setCvStatusMessage] = useState<string | null>(null);
+  const [activeDraftId, setActiveDraftId] = useState<number | null>(null);
+  const [activatingDraftId, setActivatingDraftId] = useState<number | null>(null);
   const initials = useMemo(() => {
     const name = profile.name || user?.name || "User";
     return name
@@ -57,6 +65,13 @@ const MyProfilePage: React.FC = () => {
       return { ...prev, email: user.email };
     });
   }, [user?.email]);
+
+  useEffect(() => {
+    if (!hasCvTab) return;
+    getActiveProfileDraft()
+      .then((res) => setActiveDraftId(res.data?.id ?? null))
+      .catch(() => setActiveDraftId(null));
+  }, [hasCvTab, cvEntries.length]);
 
   const handleAvatarDraftChange = (file: File | null) => {
     if (!file) return;
@@ -111,6 +126,37 @@ const MyProfilePage: React.FC = () => {
     }
   };
 
+  const handleActivateBuilderCv = async (entry: StoredCvEntry & { type: "builder" }) => {
+    try {
+      setCvStatusMessage(null);
+      setActivatingDraftId(entry.draftId);
+      await activateProfileDraft(entry.draftId);
+      setActiveDraftId(entry.draftId);
+      setCvStatusMessage("Active CV updated.");
+      setTimeout(() => setCvStatusMessage(null), 3000);
+    } catch (err: any) {
+      setCvStatusMessage(
+        err?.response?.data?.detail || "Failed to set this CV as active."
+      );
+    } finally {
+      setActivatingDraftId(null);
+    }
+  };
+
+  const handleRemoveCvEntry = async (entry: StoredCvEntry) => {
+    removeCvEntry(entry.id);
+    if (entry.type === "builder" && entry.draftId === activeDraftId) {
+      try {
+        await clearActiveProfileDraft();
+      } catch {
+        // ignore
+      }
+      setActiveDraftId(null);
+      setCvStatusMessage("Active CV cleared.");
+      setTimeout(() => setCvStatusMessage(null), 3000);
+    }
+  };
+
   const renderCvEntry = (entry: StoredCvEntry) => {
     if (entry.type === "uploaded") {
       return (
@@ -139,7 +185,7 @@ const MyProfilePage: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => removeCvEntry(entry.id)}
+              onClick={() => handleRemoveCvEntry(entry)}
               className="px-3 py-1 text-xs font-semibold text-white rounded-lg bg-rose-500 hover:bg-rose-600"
             >
               Remove
@@ -158,8 +204,29 @@ const MyProfilePage: React.FC = () => {
           <p className="text-xs text-slate-500">
             Draft #{entry.draftId} • {entry.templateId || "Template"}
           </p>
+          {hasCvTab && entry.draftId === activeDraftId && (
+            <p className="text-xs font-semibold text-emerald-600">Active CV for job matching</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
+          {hasCvTab && (
+            <button
+              type="button"
+              onClick={() => handleActivateBuilderCv(entry)}
+              disabled={activatingDraftId === entry.draftId}
+              className={`px-3 py-1 text-xs font-semibold rounded-lg ${
+                entry.draftId === activeDraftId
+                  ? "bg-emerald-100 text-emerald-700"
+                  : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+              }`}
+            >
+              {entry.draftId === activeDraftId
+                ? "Active"
+                : activatingDraftId === entry.draftId
+                ? "Setting..."
+                : "Use for matching"}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => handleDownloadBuilderCv(entry)}
@@ -169,7 +236,7 @@ const MyProfilePage: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={() => removeCvEntry(entry.id)}
+            onClick={() => handleRemoveCvEntry(entry)}
             className="px-3 py-1 text-xs font-semibold text-white rounded-lg bg-rose-500 hover:bg-rose-600"
           >
             Remove
@@ -269,6 +336,9 @@ const MyProfilePage: React.FC = () => {
 
         {hasCvTab && activeTab === "cvs" && (
           <div className="p-6 space-y-5">
+            {cvStatusMessage && (
+              <p className="text-xs text-emerald-600">{cvStatusMessage}</p>
+            )}
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Upload a CV file</label> <br />
               <input

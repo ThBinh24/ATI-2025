@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import shutil
 from pathlib import Path
 from uuid import uuid4
@@ -13,6 +14,7 @@ from fastapi import (
     UploadFile,
     status,
     Response,
+    Query,
 )
 from fastapi.responses import FileResponse
 
@@ -41,6 +43,9 @@ from app.services.gemini_service import (
     summarize_jd_for_prompt,
 )
 from app.services.skills_service import extract_skills
+from app.services import profile_service
+from app.services.cv_matching_service import build_cv_analysis
+from app.services import profile_match_service
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -164,6 +169,75 @@ def get_jobs(current_user: dict = Depends(get_current_user)):
     else:
         jobs = list_jobs(published_only=False)
     return [serialize_job(job) for job in jobs]
+
+@router.get("/profile-match")
+def get_jobs_profile_match(
+    limit: int = Query(default=20, ge=1, le=100),
+    current_user: dict = Depends(require_roles("student")),
+):
+    draft = profile_service.get_active_draft(current_user["id"])
+    if not draft:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Please add a CV to My Profile and set it as active before using this filter.",
+        )
+    cv_text = profile_service.draft_to_plaintext(draft).strip()
+    if not cv_text:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Active CV has no content. Update it in the AI Profile Builder before matching.",
+        )
+    cv_hash = hashlib.sha256(cv_text.encode("utf-8")).hexdigest()
+    jobs = list_jobs(published_only=True)
+    scored_jobs = []
+    for job in jobs:
+        cached = profile_match_service.get_cached_match(current_user["id"], job["id"], cv_hash)
+        if cached:
+            analysis = cached
+            score = float(analysis.get("score", 0.0) or 0.0)
+        else:
+            analysis_dict = build_cv_analysis(cv_text, job).dict()
+            score = round(
+                (float(analysis_dict.get("coverage", 0.0)) + float(analysis_dict.get("similarity", 0.0))) / 2.0,
+                4,
+            )
+            profile_match_service.save_match(
+                current_user["id"],
+                job["id"],
+                cv_hash,
+                score,
+                float(analysis_dict.get("coverage", 0.0)),
+                float(analysis_dict.get("similarity", 0.0)),
+                analysis_dict,
+            )
+            analysis = {**analysis_dict, "score": score}
+        serialized = serialize_job(job) or {}
+        scored_jobs.append(
+            {
+                **serialized,
+                "match": {
+                    **analysis,
+                    "score": score,
+                },
+            }
+        )
+    scored_jobs.sort(key=lambda item: item["match"]["score"], reverse=True)
+    return scored_jobs[:limit]
+
+
+@router.get("/profile-match/history")
+def list_profile_match_history(
+    limit: int = Query(default=50, ge=1, le=200),
+    current_user: dict = Depends(require_roles("student")),
+):
+    history = profile_match_service.list_history(current_user["id"], limit)
+    return history
+
+
+@router.delete("/profile-match/history")
+def clear_profile_match_history(current_user: dict = Depends(require_roles("student"))):
+    profile_match_service.clear_history(current_user["id"])
+    return {"status": "cleared"}
 
 
 @router.get("/history")

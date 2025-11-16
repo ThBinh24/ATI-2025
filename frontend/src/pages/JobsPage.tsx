@@ -6,6 +6,9 @@ import {
   downloadMyApplicationCv,
   listJobs,
   listMyApplications,
+  listJobsMatchedToProfile,
+  listProfileMatchHistory,
+  clearProfileMatchHistory,
 } from "../services/backend";
 import { useAuth } from "../context/AuthContext";
 import { formatTime } from "../lib/time";
@@ -39,8 +42,19 @@ const JobsPage: React.FC = () => {
   const [jobPendingDelete, setJobPendingDelete] = useState<any | null>(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [detailsModal, setDetailsModal] = useState<any | null>(null);
-  const [activeTab, setActiveTab] = useState<"list" | "applied">("list");
+  const [activeTab, setActiveTab] = useState<"list" | "applied" | "history">("list");
   const [downloadingCvId, setDownloadingCvId] = useState<number | null>(null);
+  const [useProfileFilter, setUseProfileFilter] = useState(false);
+  const [matchedJobs, setMatchedJobs] = useState<any[]>([]);
+  const [matching, setMatching] = useState(false);
+  const [profileFilterError, setProfileFilterError] = useState<string | null>(null);
+  const [matchHistory, setMatchHistory] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [clearingHistory, setClearingHistory] = useState(false);
+  const [historySort, setHistorySort] = useState<{
+    field: "score" | "coverage" | "title";
+    direction: "asc" | "desc";
+  }>({ field: "score", direction: "desc" });
   const { user } = useAuth();
 
   useEffect(() => {
@@ -166,6 +180,84 @@ const JobsPage: React.FC = () => {
     }
   };
 
+  const fetchProfileMatches = async () => {
+    try {
+      setMatching(true);
+      setProfileFilterError(null);
+      const res = await listJobsMatchedToProfile();
+      setMatchedJobs(res.data || []);
+      setUseProfileFilter(true);
+      fetchMatchHistory();
+    } catch (err: any) {
+      setProfileFilterError(
+        err?.response?.data?.detail ||
+          "Unable to match jobs with your profile. Please ensure you have an active CV."
+      );
+      setUseProfileFilter(false);
+    } finally {
+      setMatching(false);
+    }
+  };
+
+  const fetchMatchHistory = async () => {
+    if (user?.role !== "student") return;
+    try {
+      setLoadingHistory(true);
+      const res = await listProfileMatchHistory();
+      setMatchHistory(res.data || []);
+    } catch (err: any) {
+      console.error("Failed to load history", err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  const handleRefreshMatches = async () => {
+    setProfileFilterError(null);
+    setMatchedJobs([]);
+    await fetchProfileMatches();
+  };
+
+  const handleClearHistory = async () => {
+    try {
+      setClearingHistory(true);
+      await clearProfileMatchHistory();
+      setMatchHistory([]);
+      setMatchedJobs([]);
+      setUseProfileFilter(false);
+    } catch (err: any) {
+      setProfileFilterError(
+        err?.response?.data?.detail ||
+          "Failed to clear history. Please try again."
+      );
+    } finally {
+      setClearingHistory(false);
+    }
+  };
+
+  const handleToggleProfileFilter = async () => {
+    if (useProfileFilter) {
+      setUseProfileFilter(false);
+      setProfileFilterError(null);
+      return;
+    }
+    await fetchProfileMatches();
+  };
+
+  useEffect(() => {
+    if (user?.role !== "student") {
+      setUseProfileFilter(false);
+      setMatchedJobs([]);
+      setMatchHistory([]);
+    }
+  }, [user?.role]);
+
+  useEffect(() => {
+    if (user?.role === "student") {
+      fetchMatchHistory();
+    }
+  }, [user?.role]);
+
   if (loadingJobs) {
     return <div>Loading jobs...</div>;
   }
@@ -184,7 +276,18 @@ const JobsPage: React.FC = () => {
               </h2>
               <p className="text-sm text-slate-500">{job.company_name}</p>
             </div>
-            {user?.role !== "student" && (
+            {user?.role === "student" ? (
+              job.match ? (
+                <div className="text-right">
+                  <p className="text-xs font-semibold text-blue-600">
+                    Match {Math.round((job.match.score || 0) * 100)}%
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Coverage {Math.round((job.match.coverage || 0) * 100)}%
+                  </p>
+                </div>
+              ) : null
+            ) : (
               <span
                 className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wide ${
                   job.published || job.status === "approved"
@@ -206,6 +309,14 @@ const JobsPage: React.FC = () => {
             job.jd_text,
             "(No JD provided)",
             "mt-3 text-sm text-slate-600 max-h-32 overflow-hidden break-words space-y-2 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_p]:mb-2 [&_li]:mb-1",
+          )}
+          {job.match && user?.role === "student" && (
+            <div className="mt-2 text-xs text-slate-500">
+              Missing skills:{" "}
+              {job.match.missing && job.match.missing.length > 0
+                ? job.match.missing.slice(0, 3).join(", ")
+                : "None"}
+            </div>
           )}
           <div className="mt-4 space-y-2">
             {job.has_attachment && (
@@ -341,6 +452,32 @@ const JobsPage: React.FC = () => {
     </div>
   );
 
+  const baseJobList =
+    user?.role === "student"
+      ? jobs.filter((job) => !appliedJobIds.has(Number(job.id)))
+      : jobs;
+  const baseMatchedList =
+    user?.role === "student"
+      ? matchedJobs.filter((job) => !appliedJobIds.has(Number(job.id)))
+      : matchedJobs;
+  const displayedJobs =
+    useProfileFilter && user?.role === "student"
+      ? baseMatchedList
+      : baseJobList;
+
+  const sortedMatchHistory = [...matchHistory].sort((a, b) => {
+    const dir = historySort.direction === "asc" ? 1 : -1;
+    if (historySort.field === "title") {
+      const titleA = (a.job?.title || "").toLowerCase();
+      const titleB = (b.job?.title || "").toLowerCase();
+      return titleA.localeCompare(titleB) * dir;
+    }
+    const valueA = Number(a.match?.[historySort.field] || 0);
+    const valueB = Number(b.match?.[historySort.field] || 0);
+    if (valueA === valueB) return 0;
+    return valueA > valueB ? dir : -dir;
+  });
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -392,22 +529,157 @@ const JobsPage: React.FC = () => {
             >
               Jobs applied
             </button>
+            <button
+              className={`px-4 py-2 text-sm font-medium transition ${
+                activeTab === "history"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
+              onClick={() => setActiveTab("history")}
+            >
+              Match history
+            </button>
           </div>
-          <div className="pt-4">
-            {activeTab === "list" &&
-              jobCards(
-                jobs.filter((job) => !appliedJobIds.has(Number(job.id)))
-              )}
+          <div className="pt-4 space-y-4">
+            {activeTab === "list" && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <label className="inline-flex items-center gap-2 text-sm text-slate-600">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                      onChange={handleToggleProfileFilter}
+                      checked={useProfileFilter}
+                      disabled={matching}
+                    />
+                    Use my active CV to prioritize jobs
+                  </label>
+                  {useProfileFilter && (
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+                      onClick={handleRefreshMatches}
+                      disabled={matching}
+                    >
+                      {matching ? "Matching..." : "Refresh matches"}
+                    </button>
+                  )}
+                </div>
+                {profileFilterError && (
+                  <div className="px-3 py-2 text-sm border rounded border-amber-200 bg-amber-50 text-amber-700">
+                    {profileFilterError}
+                  </div>
+                )}
+                {useProfileFilter && !matching && displayedJobs.length === 0 && (
+                  <div className="p-4 text-sm text-center text-slate-500 bg-white border rounded-xl border-slate-200">
+                    No recommended jobs available yet. Try refreshing or using another CV.
+                  </div>
+                )}
+                {matching ? (
+                  <div>Matching jobs with your profile...</div>
+                ) : (
+                  jobCards(displayedJobs)
+                )}
+              </div>
+            )}
             {activeTab === "applied" &&
               (loadingApplications ? (
                 <div>Loading your applications...</div>
               ) : (
                 appliedCards
               ))}
+            {activeTab === "history" && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-1">
+                    <h3 className="text-base font-semibold text-slate-800">
+                      Match history
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <span>Sort by</span>
+                      <select
+                        className="px-2 py-1 border rounded-lg border-slate-300 focus:border-blue-500 focus:outline-none"
+                        value={`${historySort.field}:${historySort.direction}`}
+                        onChange={(e) => {
+                          const [field, direction] = e.target.value.split(":");
+                          setHistorySort({
+                            field: field as "score" | "coverage" | "title",
+                            direction: direction as "asc" | "desc",
+                          });
+                        }}
+                      >
+                        <option value="score:desc">Match score (high → low)</option>
+                        <option value="score:asc">Match score (low → high)</option>
+                        <option value="coverage:desc">Coverage (high → low)</option>
+                        <option value="coverage:asc">Coverage (low → high)</option>
+                        <option value="title:asc">Title (A → Z)</option>
+                        <option value="title:desc">Title (Z → A)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      className="inline-flex items-center rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+                      onClick={fetchMatchHistory}
+                      disabled={loadingHistory}
+                    >
+                      {loadingHistory ? "Loading..." : "Refresh history"}
+                    </button>
+                    {matchHistory.length > 0 && (
+                      <button
+                        type="button"
+                        className="inline-flex items-center rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-100 disabled:opacity-60"
+                        onClick={handleClearHistory}
+                        disabled={clearingHistory}
+                      >
+                        {clearingHistory ? "Clearing..." : "Clear history"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+                {loadingHistory ? (
+                  <div className="text-sm text-slate-500">Loading history...</div>
+                ) : matchHistory.length === 0 ? (
+                  <div className="p-4 text-sm text-center text-slate-500 bg-white border rounded-xl border-slate-200">
+                    No match history yet. Run the matcher to see previous results.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {sortedMatchHistory.map((entry) => (
+                      <div
+                        key={`${entry.job?.id}-${entry.matched_at}`}
+                        className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border rounded-xl border-slate-200"
+                      >
+                        <div>
+                          <p className="text-sm font-semibold text-slate-900">
+                            {entry.job?.title || "Job"}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {entry.job?.company_name || "Unknown company"}
+                          </p>
+                          <p className="text-[11px] text-slate-400">
+                            Matched at {formatTime(entry.matched_at)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-blue-600">
+                            Match {Math.round((entry.match?.score || 0) * 100)}%
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            Coverage {Math.round((entry.match?.coverage || 0) * 100)}%
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </>
       ) : (
-        jobCards(jobs)
+        jobCards(displayedJobs)
       )}
       {jobPendingDelete && (
         <div

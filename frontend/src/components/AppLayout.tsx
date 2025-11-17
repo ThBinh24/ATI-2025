@@ -5,9 +5,10 @@ import { getProfileInfo, subscribeProfileInfo } from "../lib/profileStore";
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, logout } = useAuth();
+  const userId = user?.id ?? null;
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [storedProfile, setStoredProfile] = useState(getProfileInfo());
+  const [storedProfile, setStoredProfile] = useState(getProfileInfo(userId));
 
   const rawName = user?.name || "Unnamed";
   const cleanedName = rawName.replace(/\s*\((student|employer|admin)\)$/i, "");
@@ -28,9 +29,13 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsub = subscribeProfileInfo(() => setStoredProfile(getProfileInfo()));
+    setStoredProfile(getProfileInfo(userId));
+  }, [userId]);
+
+  useEffect(() => {
+    const unsub = subscribeProfileInfo(() => setStoredProfile(getProfileInfo(userId)));
     return unsub;
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {

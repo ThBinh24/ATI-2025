@@ -18,6 +18,7 @@ from app.dao.processed_dao import (
     list_by_email,
     list_by_job,
     mark_invite_sent,
+    delete_application_for_user,
 )
 from app.services.email_service import send_email
 
@@ -203,7 +204,32 @@ def download_my_cv(
         media_type="application/octet-stream",
         filename=filename,
     )
-# ensure blank line
+
+
+@router.delete("/my/{application_id}")
+def delete_my_application(
+    application_id: int,
+    current_user: dict = Depends(require_roles("student", "admin")),
+):
+    email = current_user.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Current user email missing.")
+    record = get_application_for_user(application_id, email)
+    if not record:
+        raise HTTPException(status_code=404, detail="Application not found.")
+    if not delete_application_for_user(application_id, email):
+        raise HTTPException(status_code=500, detail="Failed to delete application.")
+    raw_path = record.get("uploaded_file_path")
+    if raw_path:
+        file_path = Path(raw_path)
+        if not file_path.is_absolute():
+            file_path = CV_DIR / file_path
+        try:
+            if file_path.exists():
+                file_path.unlink()
+        except OSError:
+            pass
+    return {"status": "deleted"}
 
 @router.get("/{applicant_id}/cv")
 def download_applicant_cv(

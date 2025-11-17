@@ -4,6 +4,7 @@ import {
   deleteJob as deleteJobApi,
   downloadJobAttachment,
   downloadMyApplicationCv,
+  deleteMyApplication,
   listJobs,
   listMyApplications,
   listJobsMatchedToProfile,
@@ -59,6 +60,8 @@ const JobsPage: React.FC = () => {
   const [detailsModal, setDetailsModal] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<"list" | "applied" | "history">("list");
   const [downloadingCvId, setDownloadingCvId] = useState<number | null>(null);
+  const [deletingApplicationId, setDeletingApplicationId] = useState<number | null>(null);
+  const [applicationPendingDelete, setApplicationPendingDelete] = useState<any | null>(null);
   const [useProfileFilter, setUseProfileFilter] = useState(false);
   const [matchedJobs, setMatchedJobs] = useState<any[]>([]);
   const [matching, setMatching] = useState(false);
@@ -198,6 +201,36 @@ const JobsPage: React.FC = () => {
       );
     } finally {
       setDeleteBusy(false);
+    }
+  };
+
+  const openApplicationDeleteModal = (application: any) => {
+    setError(null);
+    setApplicationPendingDelete(application);
+  };
+
+  const closeApplicationDeleteModal = () => {
+    setApplicationPendingDelete(null);
+  };
+
+  const handleDeleteApplication = async () => {
+    if (!applicationPendingDelete?.id) return;
+    const application = applicationPendingDelete;
+    try {
+      setDeletingApplicationId(application.id);
+      await deleteMyApplication(application.id);
+      setApplications((prev) => prev.filter((item) => item.id !== application.id));
+      setError(null);
+      setApplicationPendingDelete(null);
+    } catch (err: any) {
+      setError(
+        extractErrorMessage(
+          err,
+          "Failed to delete this application. Please try again."
+        )
+      );
+    } finally {
+      setDeletingApplicationId(null);
     }
   };
 
@@ -463,6 +496,13 @@ const JobsPage: React.FC = () => {
                 Apply again
               </Link>
             )}
+            <button
+              type="button"
+              className="inline-flex items-center rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-rose-700 disabled:opacity-60"
+              onClick={() => openApplicationDeleteModal(record)}
+            >
+              Delete
+            </button>
           </div>
         </div>
       ))}
@@ -743,6 +783,53 @@ const JobsPage: React.FC = () => {
                 disabled={deleteBusy}
               >
                 {deleteBusy ? "Deleting..." : "Delete job"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {applicationPendingDelete && (
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center px-4 bg-slate-900/50 backdrop-blur-sm"
+          style={{ marginTop: 0 }}
+        >
+          <div className="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl">
+            <div className="space-y-1">
+              <h3 className="text-lg font-semibold text-slate-900">Remove application</h3>
+              <p className="text-sm text-slate-600">
+                This removes the application for{" "}
+                <span className="font-semibold text-slate-900">
+                  {applicationPendingDelete.job_title_full ||
+                    applicationPendingDelete.job_title ||
+                    "this job"}
+                </span>{" "}
+                from your history. You will need to re-apply if you change your mind.
+              </p>
+            </div>
+            <div className="p-3 mt-4 text-sm border rounded-lg border-slate-200 bg-slate-50">
+              <p className="text-slate-600">
+                Applied on {formatTime(applicationPendingDelete.created_at)} • Coverage{" "}
+                {Number.isFinite(applicationPendingDelete.coverage)
+                  ? Number(applicationPendingDelete.coverage).toFixed(2)
+                  : applicationPendingDelete.coverage}
+              </p>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                type="button"
+                className="px-4 py-2 text-sm font-medium transition border rounded-lg border-slate-300 text-slate-600 hover:bg-slate-100"
+                onClick={closeApplicationDeleteModal}
+                disabled={deletingApplicationId === applicationPendingDelete.id}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="px-4 py-2 text-sm font-semibold text-white transition rounded-lg shadow-sm bg-rose-600 hover:bg-rose-700 disabled:opacity-60"
+                onClick={handleDeleteApplication}
+                disabled={deletingApplicationId === applicationPendingDelete.id}
+              >
+                {deletingApplicationId === applicationPendingDelete.id ? "Removing..." : "Delete"}
               </button>
             </div>
           </div>

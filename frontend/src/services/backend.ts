@@ -87,6 +87,8 @@ export const listApplicants = (job_id: number) =>
 export const logApplicant = (payload: any) =>
   api.post("/applicants/log", payload);
 export const listMyApplications = () => api.get("/applicants/my");
+export const deleteMyApplication = (applicationId: number) =>
+  api.delete(`/applicants/my/${applicationId}`);
 export const getMyApplicationDetail = (applicationId: number) =>
   api.get(`/applicants/my/${applicationId}`);
 export const uploadCvFile = (file: File) => {

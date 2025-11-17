@@ -30,6 +30,7 @@ const emptyInfo: ProfileInfo = {
 
 const MyProfilePage: React.FC = () => {
   const { user } = useAuth();
+  const userId = user?.id ?? null;
   const hasCvTab = user?.role === "student";
   const [activeTab, setActiveTab] = useState<"info" | "cvs">(
     hasCvTab ? "info" : "info"
@@ -37,9 +38,9 @@ const MyProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<ProfileInfo>(() => ({
     ...emptyInfo,
     email: user?.email,
-    ...getProfileInfo(),
+    ...getProfileInfo(userId),
   }));
-  const [cvEntries, setCvEntries] = useState<StoredCvEntry[]>(() => listProfileCvs());
+  const [cvEntries, setCvEntries] = useState<StoredCvEntry[]>(() => listProfileCvs(userId));
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [cvStatusMessage, setCvStatusMessage] = useState<string | null>(null);
@@ -61,9 +62,24 @@ const MyProfilePage: React.FC = () => {
   const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    const unsub = subscribeCvChanges(() => setCvEntries(listProfileCvs()));
+    const unsub = subscribeCvChanges(() => setCvEntries(listProfileCvs(userId)));
     return unsub;
-  }, []);
+  }, [userId]);
+
+  useEffect(() => {
+    setProfile((prev) => {
+      const stored = getProfileInfo(userId);
+      const merged = {
+        ...emptyInfo,
+        ...stored,
+      };
+      if (!merged.email && user?.email) {
+        merged.email = user.email;
+      }
+      return merged;
+    });
+    setCvEntries(listProfileCvs(userId));
+  }, [userId, user?.email]);
 
   useEffect(() => {
     setProfile((prev) => {
@@ -95,7 +111,7 @@ const MyProfilePage: React.FC = () => {
 
   const handleInfoSave = (e: React.FormEvent) => {
     e.preventDefault();
-    saveProfileInfo(profile);
+    saveProfileInfo(profile, userId);
     setStatusMessage("Profile information saved.");
     setTimeout(() => setStatusMessage(null), 3000);
   };
@@ -113,7 +129,7 @@ const MyProfilePage: React.FC = () => {
           name: file.name,
           mime: file.type || "application/octet-stream",
           dataUrl: reader.result,
-        });
+        }, userId);
         setUploadError(null);
       }
     };
@@ -164,7 +180,7 @@ const MyProfilePage: React.FC = () => {
       });
       const backendId = res.data?.uploaded_id ?? null;
       if (backendId) {
-        setUploadedBackendId(entry.id, backendId);
+        setUploadedBackendId(entry.id, backendId, userId);
       }
       setActiveDraftId(null);
       setActiveUploadedBackendId(backendId);
@@ -180,7 +196,7 @@ const MyProfilePage: React.FC = () => {
   };
 
   const handleRemoveCvEntry = async (entry: StoredCvEntry) => {
-    removeCvEntry(entry.id);
+    removeCvEntry(entry.id, userId);
     if (entry.type === "builder" && entry.draftId === activeDraftId) {
       try {
         await clearActiveProfileDraft();

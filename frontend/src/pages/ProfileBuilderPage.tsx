@@ -712,7 +712,7 @@ const ProfileBuilderPage: React.FC = () => {
       draftId: draft.id,
       name: draftData.name || `Draft ${draft.id}`,
       templateId: selectedTemplate,
-    });
+    }, user?.id ?? null);
     setCvNotice("Added to My CVs.");
     setTimeout(() => setCvNotice(null), 2500);
   }, [allowProfileCv, draft, draftData.name, selectedTemplate]);

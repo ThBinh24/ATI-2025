@@ -38,19 +38,38 @@ const safeJsonParse = <T>(value: string | null): T | null => {
   }
 };
 
-export const getProfileInfo = (): ProfileInfo =>
-  safeJsonParse<ProfileInfo>(localStorage.getItem(PROFILE_INFO_KEY)) || {};
+const keyForUser = (base: string, userId?: number | null) => {
+  const suffix = userId != null ? String(userId) : "anon";
+  return `${base}:${suffix}`;
+};
 
-export const saveProfileInfo = (info: ProfileInfo) => {
-  localStorage.setItem(PROFILE_INFO_KEY, JSON.stringify(info));
+const readWithLegacyFallback = <T>(base: string, userId?: number | null) => {
+  const namespaced = safeJsonParse<T>(localStorage.getItem(keyForUser(base, userId)));
+  if (namespaced) {
+    return namespaced;
+  }
+  return safeJsonParse<T>(localStorage.getItem(base));
+};
+
+export const getProfileInfo = (userId?: number | null): ProfileInfo =>
+  readWithLegacyFallback<ProfileInfo>(PROFILE_INFO_KEY, userId) || {};
+
+export const saveProfileInfo = (info: ProfileInfo, userId?: number | null) => {
+  localStorage.setItem(keyForUser(PROFILE_INFO_KEY, userId), JSON.stringify(info));
+  if (userId != null) {
+    localStorage.removeItem(PROFILE_INFO_KEY);
+  }
   window.dispatchEvent(new Event(PROFILE_INFO_EVENT));
 };
 
-export const listProfileCvs = (): StoredCvEntry[] =>
-  safeJsonParse<StoredCvEntry[]>(localStorage.getItem(PROFILE_CV_KEY)) || [];
+export const listProfileCvs = (userId?: number | null): StoredCvEntry[] =>
+  readWithLegacyFallback<StoredCvEntry[]>(PROFILE_CV_KEY, userId) || [];
 
-const persistCvList = (entries: StoredCvEntry[]) => {
-  localStorage.setItem(PROFILE_CV_KEY, JSON.stringify(entries));
+const persistCvList = (entries: StoredCvEntry[], userId?: number | null) => {
+  localStorage.setItem(keyForUser(PROFILE_CV_KEY, userId), JSON.stringify(entries));
+  if (userId != null) {
+    localStorage.removeItem(PROFILE_CV_KEY);
+  }
   window.dispatchEvent(new Event(PROFILE_EVENT));
 };
 
@@ -58,7 +77,7 @@ export const addUploadedCv = (params: {
   name: string;
   mime: string;
   dataUrl: string;
-}) => {
+}, userId?: number | null) => {
   const next: StoredCvEntry = {
     id: crypto.randomUUID(),
     type: "uploaded",
@@ -67,9 +86,9 @@ export const addUploadedCv = (params: {
     dataUrl: params.dataUrl,
     uploadedAt: new Date().toISOString(),
   };
-  const entries = listProfileCvs();
+  const entries = listProfileCvs(userId);
   entries.unshift(next);
-  persistCvList(entries);
+  persistCvList(entries, userId);
   return next;
 };
 
@@ -77,7 +96,7 @@ export const addBuilderCv = (params: {
   draftId: number;
   name: string;
   templateId?: string;
-}) => {
+}, userId?: number | null) => {
   const next: StoredCvEntry = {
     id: `builder-${params.draftId}-${Date.now()}`,
     type: "builder",
@@ -86,21 +105,25 @@ export const addBuilderCv = (params: {
     draftId: params.draftId,
     addedAt: new Date().toISOString(),
   };
-  const entries = listProfileCvs();
+  const entries = listProfileCvs(userId);
   if (!entries.find((entry) => entry.type === "builder" && entry.draftId === params.draftId)) {
     entries.unshift(next);
-    persistCvList(entries);
+    persistCvList(entries, userId);
   }
   return next;
 };
 
-export const removeCvEntry = (id: string) => {
-  const filtered = listProfileCvs().filter((entry) => entry.id !== id);
-  persistCvList(filtered);
+export const removeCvEntry = (id: string, userId?: number | null) => {
+  const filtered = listProfileCvs(userId).filter((entry) => entry.id !== id);
+  persistCvList(filtered, userId);
 };
 
-export const setUploadedBackendId = (entryId: string, backendId: number | null) => {
-  const entries = listProfileCvs();
+export const setUploadedBackendId = (
+  entryId: string,
+  backendId: number | null,
+  userId?: number | null
+) => {
+  const entries = listProfileCvs(userId);
   let changed = false;
   const updated = entries.map((entry) => {
     if (entry.id === entryId && entry.type === "uploaded") {
@@ -113,7 +136,7 @@ export const setUploadedBackendId = (entryId: string, backendId: number | null) 
     return entry;
   });
   if (changed) {
-    persistCvList(updated);
+    persistCvList(updated, userId);
   }
 };
 

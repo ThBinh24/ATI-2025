@@ -5,6 +5,7 @@ import {
   listJobs,
 } from "../services/backend";
 import { useAuth } from "../context/AuthContext";
+import { sanitizeHtml } from "../lib/sanitize";
 
 interface JobSummary {
   id: number;
@@ -81,6 +82,10 @@ const InterviewQuestionsPage: React.FC = () => {
   const hasStoredJd = useMemo(
     () => Boolean((selectedJob?.jd_text || "").trim()),
     [selectedJob?.jd_text]
+  );
+  const sanitizedStoredJd = useMemo(
+    () => (hasStoredJd ? sanitizeHtml(selectedJob?.jd_text || "") : ""),
+    [hasStoredJd, selectedJob?.jd_text]
   );
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -218,12 +223,19 @@ const InterviewQuestionsPage: React.FC = () => {
           <label className="text-sm font-medium text-slate-700">
             JD currently available
           </label>
-          <div className="p-3 overflow-y-auto text-xs whitespace-pre-wrap border rounded-lg border-slate-200 bg-slate-50 text-slate-700 max-h-48">
-            {detailLoading
-              ? "Loading..."
-              : hasStoredJd
-              ? selectedJob?.jd_text
-              : "(There is no JD text saved in the system.)"}
+          <div className="p-3 overflow-y-auto border rounded-lg border-slate-200 bg-slate-50 max-h-48">
+            {detailLoading ? (
+              <p className="text-xs text-slate-500">Loading...</p>
+            ) : hasStoredJd && sanitizedStoredJd ? (
+              <div
+                className="text-xs leading-relaxed text-slate-700 space-y-2 break-words [&_ul]:list-disc [&_ul]:ml-4 [&_ol]:list-decimal [&_ol]:ml-4 [&_h1]:font-semibold [&_h2]:font-semibold [&_h3]:font-semibold [&_p]:mb-2 [&_li]:mb-1"
+                dangerouslySetInnerHTML={{ __html: sanitizedStoredJd }}
+              />
+            ) : (
+              <p className="text-xs text-slate-500">
+                (There is no JD text saved in the system.)
+              </p>
+            )}
           </div>
         </div>
 

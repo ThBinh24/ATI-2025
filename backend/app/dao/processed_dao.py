@@ -137,3 +137,14 @@ def get_application_for_user(applicant_id: int, email: str) -> Optional[Dict[str
     )
     row = cur.fetchone()
     return dict(row) if row else None
+
+
+def delete_application_for_user(applicant_id: int, email: str) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "DELETE FROM processed WHERE id = ? AND email = ?",
+        (int(applicant_id), email),
+    )
+    conn.commit()
+    return cur.rowcount > 0

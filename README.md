@@ -20,6 +20,8 @@ CV Matcher is an AI-assisted recruitment platform that streamlines hiring for ad
 - Run "Run AI Check" to obtain coverage, similarity, missing skills, quality warnings, and course suggestions.
 - Submit applications with file upload or pasted CV text and review past submissions.
 - Practise interviews through an AI chat that delivers concise feedback on each answer.
+- Build CV by AI
+- Filter CV to find suitable jobs
 
 ## Architecture
 

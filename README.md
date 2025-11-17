@@ -80,6 +80,12 @@ npm run dev
 
 The development server runs at http://localhost:5173 by default.
 
+## Acount to login
+- Student: You have to register by your own
+- HR: You have to register by your own
+- Admin:
+  - admin@example.com
+  - password:12345678
 ## Environment Variables
 
 `backend/.env`

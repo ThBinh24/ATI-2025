@@ -8,12 +8,16 @@ import {
   removeCvEntry,
   saveProfileInfo,
   subscribeCvChanges,
+  setUploadedBackendId,
 } from "../lib/profileStore";
 import {
   exportProfilePdf,
   activateProfileDraft,
   getActiveProfileDraft,
   clearActiveProfileDraft,
+  activateUploadedCv as activateUploadedCvApi,
+  getActiveUploadedCv,
+  clearActiveUploadedCv as clearActiveUploadedCvApi,
 } from "../services/backend";
 import { useAuth } from "../context/AuthContext";
 
@@ -41,6 +45,8 @@ const MyProfilePage: React.FC = () => {
   const [cvStatusMessage, setCvStatusMessage] = useState<string | null>(null);
   const [activeDraftId, setActiveDraftId] = useState<number | null>(null);
   const [activatingDraftId, setActivatingDraftId] = useState<number | null>(null);
+  const [activeUploadedBackendId, setActiveUploadedBackendId] = useState<number | null>(null);
+  const [activatingUploadedEntryId, setActivatingUploadedEntryId] = useState<string | null>(null);
   const initials = useMemo(() => {
     const name = profile.name || user?.name || "User";
     return name
@@ -71,6 +77,9 @@ const MyProfilePage: React.FC = () => {
     getActiveProfileDraft()
       .then((res) => setActiveDraftId(res.data?.id ?? null))
       .catch(() => setActiveDraftId(null));
+    getActiveUploadedCv()
+      .then((res) => setActiveUploadedBackendId(res.data?.id ?? null))
+      .catch(() => setActiveUploadedBackendId(null));
   }, [hasCvTab, cvEntries.length]);
 
   const handleAvatarDraftChange = (file: File | null) => {
@@ -132,6 +141,7 @@ const MyProfilePage: React.FC = () => {
       setActivatingDraftId(entry.draftId);
       await activateProfileDraft(entry.draftId);
       setActiveDraftId(entry.draftId);
+       setActiveUploadedBackendId(null);
       setCvStatusMessage("Active CV updated.");
       setTimeout(() => setCvStatusMessage(null), 3000);
     } catch (err: any) {
@@ -140,6 +150,32 @@ const MyProfilePage: React.FC = () => {
       );
     } finally {
       setActivatingDraftId(null);
+    }
+  };
+
+  const handleActivateUploadedCv = async (entry: StoredCvEntry & { type: "uploaded" }) => {
+    try {
+      setCvStatusMessage(null);
+      setActivatingUploadedEntryId(entry.id);
+      const res = await activateUploadedCvApi({
+        name: entry.name,
+        mime: entry.mime,
+        dataUrl: entry.dataUrl,
+      });
+      const backendId = res.data?.uploaded_id ?? null;
+      if (backendId) {
+        setUploadedBackendId(entry.id, backendId);
+      }
+      setActiveDraftId(null);
+      setActiveUploadedBackendId(backendId);
+      setCvStatusMessage("Active CV updated.");
+      setTimeout(() => setCvStatusMessage(null), 3000);
+    } catch (err: any) {
+      setCvStatusMessage(
+        err?.response?.data?.detail || "Failed to set this CV as active."
+      );
+    } finally {
+      setActivatingUploadedEntryId(null);
     }
   };
 
@@ -152,6 +188,15 @@ const MyProfilePage: React.FC = () => {
         // ignore
       }
       setActiveDraftId(null);
+      setCvStatusMessage("Active CV cleared.");
+      setTimeout(() => setCvStatusMessage(null), 3000);
+    } else if (entry.type === "uploaded" && entry.backendId && entry.backendId === activeUploadedBackendId) {
+      try {
+        await clearActiveUploadedCvApi();
+      } catch {
+        // ignore
+      }
+      setActiveUploadedBackendId(null);
       setCvStatusMessage("Active CV cleared.");
       setTimeout(() => setCvStatusMessage(null), 3000);
     }
@@ -171,6 +216,24 @@ const MyProfilePage: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {hasCvTab && (
+              <button
+                type="button"
+                onClick={() => handleActivateUploadedCv(entry)}
+                disabled={activatingUploadedEntryId === entry.id}
+                className={`px-3 py-1 text-xs font-semibold rounded-lg ${
+                  entry.backendId && entry.backendId === activeUploadedBackendId
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                }`}
+              >
+                {entry.backendId && entry.backendId === activeUploadedBackendId
+                  ? "Active"
+                  : activatingUploadedEntryId === entry.id
+                  ? "Setting..."
+                  : "Use for matching"}
+              </button>
+            )}
             <button
               type="button"
               className="px-3 py-1 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700"

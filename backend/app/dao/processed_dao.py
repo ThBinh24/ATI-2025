@@ -108,6 +108,17 @@ def list_by_email(email: str) -> List[Dict[str, Any]]:
     return [dict(r) for r in cur.fetchall()]
 
 
+def list_job_ids_by_email(email: str) -> List[int]:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT job_id FROM processed WHERE email = ? AND job_id IS NOT NULL",
+        (email,),
+    )
+    rows = cur.fetchall()
+    return [int(row["job_id"]) for row in rows if row["job_id"] is not None]
+
+
 def get_application_for_user(applicant_id: int, email: str) -> Optional[Dict[str, Any]]:
     conn = get_connection()
     cur = conn.cursor()

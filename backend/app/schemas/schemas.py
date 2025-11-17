@@ -128,6 +128,7 @@ class ProfileDraftOut(BaseModel):
     template_id: str
     template_version: str
     schema_version: str
+    draft_title: str = ""
     data: Dict[str, Any]
     blocks: List[Dict[str, Any]]
 
@@ -150,6 +151,19 @@ class ProfileDraftSummary(BaseModel):
     template_id: str
     template_version: str
     name: Optional[str] = ""
+    draft_title: Optional[str] = ""
     headline: Optional[str] = ""
     updated_at: Optional[str] = None
+    created_at: Optional[str] = None
+
+
+class ProfileUploadedActivateRequest(BaseModel):
+    name: str
+    mime: str
+    data_url: str
+
+
+class UploadedCvSummary(BaseModel):
+    id: int
+    name: str
     created_at: Optional[str] = None

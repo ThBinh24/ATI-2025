@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import base64
 import json
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from app.core.db import get_connection
 from app.services import gemini_service, profile_templates
+from app.services.cv_service import extract_text_generic_from_bytes
 
 PROFILE_SCHEMA_VERSION = "2.0.0"
 
@@ -86,11 +88,12 @@ def insert_draft(
     conn = get_connection()
     cur = conn.cursor()
     now = _now()
+    draft_title = data.get("draft_title") or data.get("name") or ""
     cur.execute(
         """
         INSERT INTO profile_drafts
-        (user_id, field, position, style, language, template_id, schema_version, template_version, data_json, blocks_json, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (user_id, field, position, style, language, template_id, schema_version, template_version, draft_title, data_json, blocks_json, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             user_id,
@@ -101,6 +104,7 @@ def insert_draft(
             template_id,
             PROFILE_SCHEMA_VERSION,
             template_version,
+            draft_title,
             json.dumps(data),
             json.dumps(blocks),
             now,
@@ -126,7 +130,7 @@ def list_drafts(user_id: int) -> List[Dict[str, Any]]:
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT id, template_id, template_version, created_at, updated_at, data_json FROM profile_drafts WHERE user_id=? ORDER BY updated_at DESC",
+        "SELECT id, template_id, template_version, draft_title, created_at, updated_at, data_json FROM profile_drafts WHERE user_id=? ORDER BY updated_at DESC",
         (user_id,),
     )
     rows = cur.fetchall()
@@ -159,6 +163,7 @@ def update_draft(
     data: Dict[str, Any],
     blocks: Optional[List[Dict[str, Any]]] = None,
     template_id: Optional[str] = None,
+    draft_title: Optional[str] = None,
 ):
     draft = get_draft(draft_id, user_id)
     if not draft:
@@ -171,15 +176,24 @@ def update_draft(
     next_blocks = profile_templates.merge_blocks_with_contract(blocks or existing_blocks, new_template)
     conn = get_connection()
     cur = conn.cursor()
+    previous_data = json.loads(draft.get("data_json") or "{}")
+    draft_title_value = (
+        draft_title
+        or data.get("draft_title")
+        or draft.get("draft_title")
+        or previous_data.get("name")
+        or ""
+    )
     cur.execute(
         """
         UPDATE profile_drafts
-        SET template_id=?, template_version=?, data_json=?, blocks_json=?, updated_at=?
+        SET template_id=?, template_version=?, draft_title=?, data_json=?, blocks_json=?, updated_at=?
         WHERE id=? AND user_id=?
         """,
         (
             new_template,
             template_version,
+            draft_title_value,
             json.dumps(data),
             json.dumps(next_blocks),
             _now(),
@@ -206,7 +220,7 @@ def set_active_draft(user_id: int, draft_id: int) -> Optional[Dict[str, Any]]:
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE users SET active_profile_draft_id=? WHERE id=?",
+        "UPDATE users SET active_profile_draft_id=?, active_uploaded_cv_id=NULL WHERE id=?",
         (draft_id, user_id),
     )
     conn.commit()
@@ -235,6 +249,88 @@ def get_active_draft(user_id: int) -> Optional[Dict[str, Any]]:
     if not draft_id:
         return None
     return get_draft(int(draft_id), user_id)
+
+
+def save_uploaded_cv(user_id: int, name: str, mime: str, data_url: str) -> int:
+    detected_mime, raw_bytes = _decode_data_url(data_url)
+    if not raw_bytes:
+        raise ValueError("Invalid CV data.")
+    text = extract_text_generic_from_bytes(name or "uploaded_cv", raw_bytes).strip()
+    if not text:
+        raise ValueError("Unable to extract text from the uploaded CV.")
+    conn = get_connection()
+    cur = conn.cursor()
+    now = _now()
+    cur.execute(
+        """
+        INSERT INTO uploaded_cvs (user_id, name, mime, data_json, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            user_id,
+            name or "Uploaded CV",
+            mime or detected_mime or "",
+            json.dumps({"text": text}),
+            now,
+            now,
+        ),
+    )
+    conn.commit()
+    return cur.lastrowid
+
+
+def get_uploaded_cv(uploaded_id: int, user_id: int):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM uploaded_cvs WHERE id=? AND user_id=?",
+        (uploaded_id, user_id),
+    )
+    row = cur.fetchone()
+    return dict(row) if row else None
+
+
+def set_active_uploaded_cv(user_id: int, uploaded_id: int) -> Optional[Dict[str, Any]]:
+    uploaded = get_uploaded_cv(uploaded_id, user_id)
+    if not uploaded:
+        return None
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET active_uploaded_cv_id=?, active_profile_draft_id=NULL WHERE id=?",
+        (uploaded_id, user_id),
+    )
+    conn.commit()
+    return uploaded
+
+
+def clear_active_uploaded_cv(user_id: int):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET active_uploaded_cv_id=NULL WHERE id=?",
+        (user_id,),
+    )
+    conn.commit()
+
+
+def get_active_uploaded_cv(user_id: int) -> Optional[Dict[str, Any]]:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT active_uploaded_cv_id FROM users WHERE id=?",
+        (user_id,),
+    )
+    row = cur.fetchone()
+    uploaded_id = row["active_uploaded_cv_id"] if row else None
+    if not uploaded_id:
+        return None
+    return get_uploaded_cv(int(uploaded_id), user_id)
+
+
+def uploaded_cv_plaintext(entry: Dict[str, Any]) -> str:
+    data = json.loads(entry.get("data_json") or "{}")
+    return (data.get("text") or "").strip()
 
 
 def draft_to_plaintext(draft: Dict[str, Any]) -> str:
@@ -280,3 +376,19 @@ def draft_to_plaintext(draft: Dict[str, Any]) -> str:
         if normalized:
             parts.append("Skills: " + ", ".join(normalized))
     return "\n".join([p for p in parts if p])
+
+
+def _decode_data_url(data_url: str) -> tuple[str, bytes]:
+    if not data_url:
+        return "", b""
+    header, sep, b64_data = data_url.partition(",")
+    mime = ""
+    if header.startswith("data:"):
+        parts = header[5:].split(";")
+        mime = parts[0] if parts else ""
+    if not sep:
+        b64_data = header
+    try:
+        return mime, base64.b64decode(b64_data)
+    except Exception:
+        raise ValueError("Invalid base64 data.")

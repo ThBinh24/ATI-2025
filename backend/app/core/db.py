@@ -71,6 +71,10 @@ def migrate(conn: sqlite3.Connection):
         cur.execute("ALTER TABLE users ADD COLUMN active_profile_draft_id INTEGER")
     except sqlite3.OperationalError:
         pass
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN active_uploaded_cv_id INTEGER")
+    except sqlite3.OperationalError:
+        pass
     cur.execute("""
     CREATE TABLE IF NOT EXISTS profile_match_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,8 +85,18 @@ def migrate(conn: sqlite3.Connection):
         coverage REAL,
         similarity REAL,
         analysis_json TEXT,
-        created_at TEXT
+        created_at TEXT,
+        cv_source TEXT DEFAULT '',
+        cv_label TEXT DEFAULT ''
     )""")
+    try:
+        cur.execute("ALTER TABLE profile_match_history ADD COLUMN cv_source TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
+    try:
+        cur.execute("ALTER TABLE profile_match_history ADD COLUMN cv_label TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
     cur.execute("CREATE INDEX IF NOT EXISTS idx_match_history_user ON profile_match_history(user_id)")
     cur.execute("""
     CREATE TABLE IF NOT EXISTS processed (
@@ -155,4 +169,19 @@ def migrate(conn: sqlite3.Connection):
         cur.execute("ALTER TABLE profile_drafts ADD COLUMN blocks_json TEXT")
     except sqlite3.OperationalError:
         pass
+    try:
+        cur.execute("ALTER TABLE profile_drafts ADD COLUMN draft_title TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS uploaded_cvs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        name TEXT DEFAULT '',
+        mime TEXT DEFAULT '',
+        data_json TEXT,
+        created_at TEXT,
+        updated_at TEXT
+    )""")
     conn.commit()

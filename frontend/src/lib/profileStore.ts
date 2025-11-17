@@ -13,6 +13,7 @@ export type StoredCvEntry =
       mime: string;
       dataUrl: string;
       uploadedAt: string;
+      backendId?: number;
     }
   | {
       id: string;
@@ -96,6 +97,24 @@ export const addBuilderCv = (params: {
 export const removeCvEntry = (id: string) => {
   const filtered = listProfileCvs().filter((entry) => entry.id !== id);
   persistCvList(filtered);
+};
+
+export const setUploadedBackendId = (entryId: string, backendId: number | null) => {
+  const entries = listProfileCvs();
+  let changed = false;
+  const updated = entries.map((entry) => {
+    if (entry.id === entryId && entry.type === "uploaded") {
+      changed = true;
+      return {
+        ...entry,
+        backendId: backendId ?? undefined,
+      };
+    }
+    return entry;
+  });
+  if (changed) {
+    persistCvList(updated);
+  }
 };
 
 export const subscribeCvChanges = (callback: () => void) => {

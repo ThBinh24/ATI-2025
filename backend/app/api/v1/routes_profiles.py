@@ -15,6 +15,8 @@ from app.schemas.schemas import (
     ProfileRenderResponse,
     ProfileTemplateOut,
     ProfileUpdateRequest,
+    ProfileUploadedActivateRequest,
+    UploadedCvSummary,
 )
 from app.services import pdf_service, profile_service, profile_templates
 
@@ -28,13 +30,15 @@ def _draft_to_out(row: dict) -> ProfileDraftOut:
     except json.JSONDecodeError:
         blocks = []
     normalized_blocks = profile_templates.merge_blocks_with_contract(blocks, row["template_id"])
+    data = json.loads(row["data_json"] or "{}")
     return ProfileDraftOut(
         id=row["id"],
         template_id=row["template_id"],
         template_version=row["template_version"],
         schema_version=row["schema_version"],
-        data=json.loads(row["data_json"] or "{}"),
+        data=data,
         blocks=normalized_blocks,
+        draft_title=row.get("draft_title") or data.get("name", ""),
     )
 
 
@@ -45,6 +49,7 @@ def _draft_to_summary(row: dict) -> ProfileDraftSummary:
         template_id=row["template_id"],
         template_version=row.get("template_version", ""),
         name=data.get("name", ""),
+        draft_title=row.get("draft_title") or data.get("name", ""),
         headline=data.get("headline", ""),
         created_at=row.get("created_at"),
         updated_at=row.get("updated_at"),
@@ -85,6 +90,39 @@ def activate_profile_draft(
 @router.post("/drafts/active/clear")
 def clear_active_profile_draft(current_user: dict = Depends(get_current_user)):
     profile_service.clear_active_draft(current_user["id"])
+    return {"status": "cleared"}
+
+@router.post("/uploaded/activate")
+def activate_uploaded_cv(
+    request: ProfileUploadedActivateRequest,
+    current_user: dict = Depends(require_roles("student", "admin", "employer")),
+):
+    try:
+        uploaded_id = profile_service.save_uploaded_cv(
+            current_user["id"],
+            request.name.strip() or "Uploaded CV",
+            request.mime.strip() if request.mime else "",
+            request.data_url,
+        )
+        profile_service.set_active_uploaded_cv(current_user["id"], uploaded_id)
+        return {"uploaded_id": uploaded_id}
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+@router.get("/uploaded/active", response_model=Optional[UploadedCvSummary])
+def get_active_uploaded_cv(current_user: dict = Depends(get_current_user)):
+    uploaded = profile_service.get_active_uploaded_cv(current_user["id"])
+    if not uploaded:
+        return None
+    return UploadedCvSummary(
+        id=uploaded["id"],
+        name=uploaded.get("name") or "Uploaded CV",
+        created_at=uploaded.get("updated_at"),
+    )
+
+@router.post("/uploaded/clear")
+def clear_active_uploaded_cv(current_user: dict = Depends(get_current_user)):
+    profile_service.clear_active_uploaded_cv(current_user["id"])
     return {"status": "cleared"}
 
 

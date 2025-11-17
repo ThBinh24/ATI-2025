@@ -31,6 +31,21 @@ function renderHtml(
   );
 }
 
+const extractErrorMessage = (err: any, fallback: string) => {
+  const detail = err?.response?.data?.detail;
+  if (!detail) return fallback;
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => (typeof item === "string" ? item : item?.msg || JSON.stringify(item)))
+      .join("; ");
+  }
+  if (typeof detail === "object") {
+    return detail.msg || detail.error || JSON.stringify(detail);
+  }
+  return fallback;
+};
+
 const JobsPage: React.FC = () => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<any[]>([]);
@@ -66,7 +81,7 @@ const JobsPage: React.FC = () => {
     listJobs()
       .then((res) => setJobs(res.data || []))
       .catch((err) =>
-        setError(err?.response?.data?.detail || "Failed to load jobs.")
+        setError(extractErrorMessage(err, "Failed to load jobs."))
       )
       .finally(() => setLoadingJobs(false));
   }, []);
@@ -78,7 +93,7 @@ const JobsPage: React.FC = () => {
         .then((res) => setApplications(res.data || []))
         .catch((err) =>
           setError(
-            err?.response?.data?.detail || "Failed to load your applications."
+            extractErrorMessage(err, "Failed to load your applications.")
           )
         )
         .finally(() => setLoadingApplications(false));
@@ -114,8 +129,10 @@ const JobsPage: React.FC = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (err: any) {
       setError(
-        err?.response?.data?.detail ||
+        extractErrorMessage(
+          err,
           "Failed to download the attachment. Please try again."
+        )
       );
     } finally {
       setDownloadingJobId(null);
@@ -154,8 +171,10 @@ const JobsPage: React.FC = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (err: any) {
       setError(
-        err?.response?.data?.detail ||
+        extractErrorMessage(
+          err,
           "Failed to download the submitted CV. Please try again."
+        )
       );
     } finally {
       setDownloadingCvId(null);
@@ -172,8 +191,10 @@ const JobsPage: React.FC = () => {
       setJobPendingDelete(null);
     } catch (err: any) {
       setError(
-        err?.response?.data?.detail ||
+        extractErrorMessage(
+          err,
           "Failed to delete the job. Please try again."
+        )
       );
     } finally {
       setDeleteBusy(false);
@@ -190,8 +211,10 @@ const JobsPage: React.FC = () => {
       fetchMatchHistory();
     } catch (err: any) {
       setProfileFilterError(
-        err?.response?.data?.detail ||
+        extractErrorMessage(
+          err,
           "Unable to match jobs with your profile. Please ensure you have an active CV."
+        )
       );
       setUseProfileFilter(false);
     } finally {
@@ -227,8 +250,7 @@ const JobsPage: React.FC = () => {
       setUseProfileFilter(false);
     } catch (err: any) {
       setProfileFilterError(
-        err?.response?.data?.detail ||
-          "Failed to clear history. Please try again."
+        extractErrorMessage(err, "Failed to clear history. Please try again.")
       );
     } finally {
       setClearingHistory(false);
@@ -658,6 +680,16 @@ const JobsPage: React.FC = () => {
                           <p className="text-xs text-slate-500">
                             {entry.job?.company_name || "Unknown company"}
                           </p>
+                          {(entry.cv_label || entry.cv_source) && (
+                            <p className="text-[11px] text-slate-500">
+                              CV: {entry.cv_label || "Unnamed"}
+                              {entry.cv_source?.startsWith("uploaded")
+                                ? " · Uploaded file"
+                                : entry.cv_source?.startsWith("draft")
+                                ? " · AI draft"
+                                : ""}
+                            </p>
+                          )}
                           <p className="text-[11px] text-slate-400">
                             Matched at {formatTime(entry.matched_at)}
                           </p>

@@ -43,6 +43,8 @@ def save_match(
     coverage: float,
     similarity: float,
     analysis: Dict[str, Any],
+    cv_source: str = "",
+    cv_label: str = "",
 ) -> None:
     conn = get_connection()
     cur = conn.cursor()
@@ -50,8 +52,8 @@ def save_match(
     cur.execute(
         """
         INSERT INTO profile_match_history
-        (user_id, job_id, cv_hash, score, coverage, similarity, analysis_json, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (user_id, job_id, cv_hash, score, coverage, similarity, analysis_json, created_at, cv_source, cv_label)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             user_id,
@@ -62,6 +64,8 @@ def save_match(
             float(similarity),
             payload,
             _now(),
+            cv_source or "",
+            cv_label or "",
         ),
     )
     conn.commit()
@@ -73,6 +77,7 @@ def list_history(user_id: int, limit: int = 50) -> List[Dict[str, Any]]:
     cur.execute(
         """
         SELECT h.job_id, h.score, h.coverage, h.similarity, h.analysis_json, h.created_at,
+               h.cv_source, h.cv_label,
                j.title, j.company_name, j.jd_text, j.status, j.published
         FROM profile_match_history h
         JOIN jobs j ON j.id = h.job_id
@@ -85,22 +90,25 @@ def list_history(user_id: int, limit: int = 50) -> List[Dict[str, Any]]:
     rows = cur.fetchall()
     history: List[Dict[str, Any]] = []
     for row in rows:
-        analysis = json.loads(row["analysis_json"] or "{}")
-        analysis["score"] = row["score"]
-        analysis["coverage"] = row["coverage"]
-        analysis["similarity"] = row["similarity"]
+        row_dict = dict(row)
+        analysis = json.loads(row_dict.get("analysis_json") or "{}")
+        analysis["score"] = row_dict["score"]
+        analysis["coverage"] = row_dict["coverage"]
+        analysis["similarity"] = row_dict["similarity"]
         history.append(
             {
                 "job": {
-                    "id": row["job_id"],
-                    "title": row["title"],
-                    "company_name": row["company_name"],
-                    "jd_text": row["jd_text"],
-                    "status": row["status"],
-                    "published": row["published"],
+                    "id": row_dict["job_id"],
+                    "title": row_dict["title"],
+                    "company_name": row_dict["company_name"],
+                    "jd_text": row_dict["jd_text"],
+                    "status": row_dict["status"],
+                    "published": row_dict["published"],
                 },
                 "match": analysis,
-                "matched_at": row["created_at"],
+                "matched_at": row_dict["created_at"],
+                "cv_source": row_dict.get("cv_source") or "",
+                "cv_label": row_dict.get("cv_label") or "",
             }
         )
     return history

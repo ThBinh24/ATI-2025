@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import shutil
+import json
 from pathlib import Path
 from uuid import uuid4
 
@@ -35,6 +36,7 @@ from app.dao.jobs_dao import (
     update_job_status,
     delete_job as delete_job_record,
 )
+from app.dao.processed_dao import list_job_ids_by_email
 from app.services.cv_service import extract_text_generic_from_bytes
 from app.services.gemini_service import (
     generate_job_description_with_gemini,
@@ -176,19 +178,39 @@ def get_jobs_profile_match(
     current_user: dict = Depends(require_roles("student")),
 ):
     draft = profile_service.get_active_draft(current_user["id"])
-    if not draft:
+    cv_text = ""
+    cv_label = ""
+    cv_source = ""
+    if draft:
+        cv_text = profile_service.draft_to_plaintext(draft).strip()
+        cv_source = f"draft:{draft['id']}"
+        try:
+            data = json.loads(draft.get("data_json") or "{}")
+        except Exception:
+            data = {}
+        cv_label = (
+            (draft.get("draft_title") or "").strip()
+            or (data.get("name") or "").strip()
+            or f"Draft #{draft['id']}"
+        )
+    else:
+        uploaded = profile_service.get_active_uploaded_cv(current_user["id"])
+        if uploaded:
+            cv_text = profile_service.uploaded_cv_plaintext(uploaded)
+            cv_source = f"uploaded:{uploaded['id']}"
+            cv_label = (uploaded.get("name") or "Uploaded CV").strip()
+    if not cv_text:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Please add a CV to My Profile and set it as active before using this filter.",
         )
-    cv_text = profile_service.draft_to_plaintext(draft).strip()
-    if not cv_text:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Active CV has no content. Update it in the AI Profile Builder before matching.",
-        )
     cv_hash = hashlib.sha256(cv_text.encode("utf-8")).hexdigest()
     jobs = list_jobs(published_only=True)
+    email = (current_user.get("email") or "").strip()
+    if email:
+        applied_ids = set(list_job_ids_by_email(email))
+        if applied_ids:
+            jobs = [job for job in jobs if job.get("id") not in applied_ids]
     scored_jobs = []
     for job in jobs:
         cached = profile_match_service.get_cached_match(current_user["id"], job["id"], cv_hash)
@@ -209,6 +231,8 @@ def get_jobs_profile_match(
                 float(analysis_dict.get("coverage", 0.0)),
                 float(analysis_dict.get("similarity", 0.0)),
                 analysis_dict,
+                cv_source=cv_source,
+                cv_label=cv_label,
             )
             analysis = {**analysis_dict, "score": score}
         serialized = serialize_job(job) or {}

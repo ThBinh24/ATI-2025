@@ -310,6 +310,23 @@ export const getActiveProfileDraft = () =>
 export const clearActiveProfileDraft = () =>
   api.post("/profiles/drafts/active/clear", {});
 
+export const activateUploadedCv = (payload: {
+  name: string;
+  mime: string;
+  dataUrl: string;
+}) =>
+  api.post<{ uploaded_id: number }>("/profiles/uploaded/activate", {
+    name: payload.name,
+    mime: payload.mime,
+    data_url: payload.dataUrl,
+  });
+
+export const getActiveUploadedCv = () =>
+  api.get<{ id: number; name: string } | null>("/profiles/uploaded/active");
+
+export const clearActiveUploadedCv = () =>
+  api.post("/profiles/uploaded/clear", {});
+
 export interface JobMatchDetails {
   cv_skills: string[];
   jd_skills: string[];
@@ -337,6 +354,8 @@ export interface JobMatchHistoryEntry {
   job: Record<string, any>;
   match: JobMatchDetails;
   matched_at: string;
+  cv_label?: string;
+  cv_source?: string;
 }
 
 export const listProfileMatchHistory = (limit?: number) =>
